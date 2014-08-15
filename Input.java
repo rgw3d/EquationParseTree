@@ -16,7 +16,6 @@ public class Input {
         }
 
         input = handSanitizer(input);
-        System.out.println("wow");
 
         EqualsOperator equalsOperator = new EqualsOperator();
         Parser parser = new Parser();
