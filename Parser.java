@@ -149,7 +149,7 @@ public class Parser
                 closedCount++;//increment closed count
             }
             if((input.charAt(indx)+"").equals("(")){
-                closedCount++;//increment open count
+                openCount++;//increment open count
             }
 
             if(openCount == closedCount){

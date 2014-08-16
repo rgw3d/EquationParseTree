@@ -59,7 +59,7 @@ public class Input {
             return false;
         }
 
-        Pattern p = Pattern.compile("[^(0-9,*,/,\\-,+,=,x,X)]");
+        Pattern p = Pattern.compile("[^(0-9,*,/,\\-,+,=,x,X,\\^)]");
         Matcher m = p.matcher(equation);
         if(m.find()){//detects illegal character
             System.out.print("Illegal Character");
