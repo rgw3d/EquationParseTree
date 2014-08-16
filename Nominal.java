@@ -3,7 +3,7 @@ import java.util.LinkedList;
 /**
  * Created by rgw3d on 8/11/2014.
  */
-public class Nominal implements EquationNode{
+public class Nominal extends NumberStructure{
 
     private double Num;
     private double Var;

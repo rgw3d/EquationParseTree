@@ -70,8 +70,6 @@ public class PowerOperator extends Operator {
             else
                 groups.add(searchThrough.getList());
         }
-
-
         return result;
 
     }
