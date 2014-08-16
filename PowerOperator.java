@@ -22,31 +22,31 @@ public class PowerOperator extends Operator {
 
     private boolean RaiseVar = false;
 
-    public double getNum(){
-        if (canEval() && !RaiseVar) {
+    public double getNum() throws CanNotEval {
+        if (canEval() && !RaiseVar)
             return Math.pow(Terms.getFirst().getNum(), Terms.getLast().getNum());
-        }
-       
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
+
 
     }
 
-    public double getVar(){
-        float value = 1;
-        for(EquationNode tmp: Terms){
-            value *=tmp.getVar();
-        }
-        return value;
+    public double getVar() throws CanNotEval {
+        if(canEval() && RaiseVar)
+            return Terms.getFirst().getVar() * Terms.getLast().getVar();
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public Nominal getNominal() throws Exception {
+    public Nominal getNominal() throws CanNotEval {
         if(canEval()) {
             return new Nominal(getNum(), getVar());
         }
         else
-            throw new Exception("Error: Cannot evaluate expression");
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public boolean canEval(){
+    public boolean canEval() throws CanNotEval{
         //justs tests to see if the power has a variable or not.  hopefully not
         boolean canEval = true;
         for(EquationNode tmp : Terms){
@@ -55,7 +55,7 @@ public class PowerOperator extends Operator {
         return Terms.getLast().getVar() == 0 && canEval;
     }
 
-    public LinkedList<EquationNode> getList(){
+    public LinkedList<EquationNode> getList() throws CanNotEval{
 
         LinkedList<EquationNode> result = new LinkedList<EquationNode>();
 

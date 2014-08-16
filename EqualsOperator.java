@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.LinkedList;
 
 /**
@@ -18,33 +16,41 @@ public class EqualsOperator extends Operator {
         this.Terms = Terms;
     }
 
-    public double getNum() {
-        double Value = Terms.getFirst().getNum();//subtracts rightside from left side
-        Value -= Terms.getLast().getNum();
-        return Value;
+    public double getNum() throws CanNotEval {
+        if(canEval()) {
+            double Value = Terms.getFirst().getNum();//subtracts rightside from left side
+            Value -= Terms.getLast().getNum();
+            return Value;
+        }
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public double getVar() {
-        double Value = Terms.getFirst().getVar();//subtracts rightside from left side
-        Value -= Terms.getLast().getVar();
-        return Value;
+    public double getVar() throws CanNotEval {
+        if(canEval()) {
+            double Value = Terms.getFirst().getVar();//subtracts rightside from left side
+            Value -= Terms.getLast().getVar();
+            return Value;
+        }
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
 
     }
 
-    public Nominal getNominal() throws Exception {
+    public Nominal getNominal() throws CanNotEval {
         if (canEval()) {
             return new Nominal(getNum(), getVar());
         } else {
-            throw new Exception("Error: Cannot evaluate expression");
+            throw new CanNotEval("Can Not Evaluate Expression");
         }
 
     }
 
-    public boolean canEval() {
+    public boolean canEval() throws CanNotEval {
         return evaluate(Terms);
     }
 
-    private boolean evaluate(LinkedList<EquationNode> Parts) {
+    private boolean evaluate(LinkedList<EquationNode> Parts) throws CanNotEval {
         boolean allNominals = true;
         boolean allCompatable = true;
         for (EquationNode searchThrough : Parts) {//tests to see if instance of nominal
@@ -68,7 +74,7 @@ public class EqualsOperator extends Operator {
 
     */
 
-    public LinkedList<EquationNode> getList() {
+    public LinkedList<EquationNode> getList() throws CanNotEval{
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
 

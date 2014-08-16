@@ -15,31 +15,39 @@ public class MultiplicationOperator extends Operator {
         this.Terms = Terms;
     }
 
-    public double getNum(){
-        float value = 1;
-        for(EquationNode tmp: Terms){
-            value *= tmp.getNum();
+    public double getNum() throws CanNotEval{
+        if(canEval()) {
+            float value = 1;
+            for (EquationNode tmp : Terms) {
+                value *= tmp.getNum();
+            }
+            return value;
         }
-        return value;
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public double getVar(){
-        float value = 1;
-        for(EquationNode tmp: Terms){
-            value *=tmp.getVar();
+    public double getVar() throws CanNotEval{
+        if(canEval()) {
+            float value = 1;
+            for (EquationNode tmp : Terms) {
+                value *= tmp.getVar();
+            }
+            return value;
         }
-        return value;
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public Nominal getNominal() throws Exception {
+    public Nominal getNominal() throws CanNotEval {
         if(canEval()) {
             return new Nominal(getNum(), getVar());
         }
         else
-            throw new Exception("Error: Cannot evaluate expression");
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public boolean canEval(){
+    public boolean canEval() throws CanNotEval{
         boolean canEval = true;
 
         for(EquationNode tmp : Terms){
@@ -49,7 +57,7 @@ public class MultiplicationOperator extends Operator {
         return canEval;
     }
 
-    public LinkedList<EquationNode> getList(){
+    public LinkedList<EquationNode> getList() throws CanNotEval{
 
         LinkedList<EquationNode> result = new LinkedList<EquationNode>();
 
@@ -73,7 +81,7 @@ public class MultiplicationOperator extends Operator {
 
     }
 
-    public Nominal multiplyNominals(LinkedList<EquationNode> nomials){
+    public Nominal multiplyNominals(LinkedList<EquationNode> nomials) throws CanNotEval{
 
         Nominal combine = new Nominal(1,0);//set default value
         for(EquationNode cycle: nomials){
@@ -84,7 +92,7 @@ public class MultiplicationOperator extends Operator {
 
     }
 
-    public LinkedList<EquationNode> multiplyLists(LinkedList<LinkedList<EquationNode>> groups){
+    public LinkedList<EquationNode> multiplyLists(LinkedList<LinkedList<EquationNode>> groups) throws CanNotEval{
         LinkedList<EquationNode> result = new LinkedList<EquationNode>();
         result.add(new Nominal(1, 0));//set default value
 
@@ -100,7 +108,7 @@ public class MultiplicationOperator extends Operator {
         return result;
     }
 
-    public LinkedList<EquationNode> multiplyFinal(Nominal nom, LinkedList<EquationNode> list){
+    public LinkedList<EquationNode> multiplyFinal(Nominal nom, LinkedList<EquationNode> list) throws CanNotEval{
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
 

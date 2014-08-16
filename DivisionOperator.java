@@ -14,7 +14,7 @@ public class DivisionOperator extends Operator{
         this.Terms = Terms;
     }
 
-    public double getNum(){
+    public double getNum() throws CanNotEval{
         double value =0;
         for(EquationNode tmp: Terms){
             if(tmp == Terms.getFirst()){
@@ -28,29 +28,27 @@ public class DivisionOperator extends Operator{
         return value;
     }
 
-    public Nominal getNominal() throws Exception {
+    public Nominal getNominal() throws CanNotEval {
         if(canEval()) {
             return new Nominal(getNum(), getVar());
         }
         else
-            throw new Exception("Error: Cannot evaluate expression");
+            throws new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public double getVar(){
+    public double getVar() throws CanNotEval{
         double value=  0;
         for(EquationNode tmp: Terms){
             if(tmp == Terms.getFirst()){
                 value = tmp.getVar();
             }
             else
-            {
                 value -= tmp.getVar();
-            }
         }
         return value;
     }
 
-    public boolean canEval(){
+    public boolean canEval() throws CanNotEval{
         boolean canEval = true;
 
         for(EquationNode tmp : Terms){
@@ -60,7 +58,7 @@ public class DivisionOperator extends Operator{
         return canEval;
     }
 
-    public LinkedList<EquationNode> getList(){
+    public LinkedList<EquationNode> getList() throws CanNotEval{
 
         LinkedList<EquationNode> result = new LinkedList<EquationNode>();
 

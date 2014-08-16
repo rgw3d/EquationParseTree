@@ -1,5 +1,3 @@
-import sun.misc.Sort;
-
 import java.util.*;
 
 /**
@@ -22,24 +20,31 @@ public class AdditionOperator extends Operator {
         Terms.add(new Nominal(Double.parseDouble(right),0));
     }
 
-    public double getNum() {
-        double Value = 0;
-        for (EquationNode x : Terms) {
-            Value += x.getNum();
+    public double getNum() throws CanNotEval {
+        if(canEval()) {
+            double Value = 0;
+            for (EquationNode x : Terms) {
+                Value += x.getNum();
+            }
+            return Value;
         }
-        return Value;
+        else
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public double getVar() {
-        double Var = Terms.getFirst().getVar();//var should be the same if parsed correctly
-        return Var;
+    public double getVar() throws CanNotEval {
+        if(canEval()) {
+            double Var = Terms.getFirst().getVar();//var should be the same if parsed correctly
+            return Var;
+        }
+        else throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public boolean canEval() {//test to see if first everything is a nomial, then if their var values are the same
+    public boolean canEval() throws CanNotEval {//test to see if first everything is a nomial, then if their var values are the same
         return evaluate(Terms);
     }
 
-    private boolean evaluate(LinkedList<EquationNode> Parts) {
+    private boolean evaluate(LinkedList<EquationNode> Parts) throws CanNotEval {
         boolean allNominals = true;
         boolean allCompatable = true;
         for (EquationNode searchThrough : Parts) {//tests to see if instance of nominal
@@ -57,14 +62,14 @@ public class AdditionOperator extends Operator {
     }
 
 
-    public Nominal getNominal() throws Exception {
+    public Nominal getNominal() throws CanNotEval {
         if(canEval())
             return combineAll(Terms);
         else
-            throw new Exception("Error: Cannot evaluate expression");
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public Nominal combineAll(LinkedList<EquationNode> toCombine) {
+    public Nominal combineAll(LinkedList<EquationNode> toCombine) throws CanNotEval {
         Nominal result = new Nominal();
 
         for (EquationNode x : toCombine) {//add everything together
@@ -73,15 +78,18 @@ public class AdditionOperator extends Operator {
         return result;
     }
 
-    public String toString(){
-        if(canEval()){
-            return (" "+getNum()+ " "+getVar()+" "+new Nominal(getNum(),getVar()).toString());
+    public String toString() {
+        try {
+            if(canEval())
+                return (" " + getNum() + " " + getVar() + " " + new Nominal(getNum(), getVar()).toString());
+        } catch (CanNotEval canNotEval) {
+            canNotEval.printStackTrace();
         }
-        return "lol";
+        return "didnt work lol";
     }
 
 
-    public LinkedList<EquationNode> getList() {
+    public LinkedList<EquationNode> getList() throws CanNotEval {
         if (canEval()) {// if things are easy to add together
             LinkedList<EquationNode> result = new LinkedList<EquationNode>();
             result.add(combineAll(Terms));
@@ -117,7 +125,7 @@ public class AdditionOperator extends Operator {
         return Terms;
     }
 
-    public void sortSimplifyNominals(LinkedList<EquationNode> nominalGroup) {
+    public void sortSimplifyNominals(LinkedList<EquationNode> nominalGroup) throws CanNotEval{
 
     Hashtable<Double, LinkedList<EquationNode>> SortedNominals = new Hashtable<Double, LinkedList<EquationNode>>();
     ArrayList<Double> varsAdded = new ArrayList<Double>();
