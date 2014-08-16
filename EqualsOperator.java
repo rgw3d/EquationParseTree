@@ -38,11 +38,10 @@ public class EqualsOperator extends Operator {
     }
 
     public Nominal getNominal() throws CanNotEval {
-        if (canEval()) {
+        if (canEval())
             return new Nominal(getNum(), getVar());
-        } else {
+        else
             throw new CanNotEval("Can Not Evaluate Expression");
-        }
 
     }
 

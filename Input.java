@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 
 public class Input {
 
-    public static void main(String[] args) throws UnparsedString {
+    public static void main(String[] args) throws UnparsedString, CanNotEval {
 
         System.out.println("Enter an expression to see it parsed");
 

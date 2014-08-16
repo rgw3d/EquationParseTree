@@ -29,11 +29,10 @@ public class DivisionOperator extends Operator{
     }
 
     public Nominal getNominal() throws CanNotEval {
-        if(canEval()) {
+        if(canEval())
             return new Nominal(getNum(), getVar());
-        }
         else
-            throws new CanNotEval("Can Not Evaluate Expression");
+            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
     public double getVar() throws CanNotEval{
@@ -84,7 +83,7 @@ public class DivisionOperator extends Operator{
 
     }
 
-    public Nominal multiplyNominals(LinkedList<EquationNode> nomials){
+    public Nominal multiplyNominals(LinkedList<EquationNode> nomials) throws CanNotEval{
 
         Nominal combine = new Nominal(1,0);//set default value
         for(EquationNode cycle: nomials){
@@ -95,7 +94,7 @@ public class DivisionOperator extends Operator{
 
     }
 
-    public LinkedList<EquationNode> multiplyLists(LinkedList<LinkedList<EquationNode>> groups){
+    public LinkedList<EquationNode> multiplyLists(LinkedList<LinkedList<EquationNode>> groups) throws CanNotEval{
         LinkedList<EquationNode> result = new LinkedList<EquationNode>();
         result.add(new Nominal(1, 0));//set default value
 
@@ -111,7 +110,7 @@ public class DivisionOperator extends Operator{
         return result;
     }
 
-    public LinkedList<EquationNode> multiplyFinal(Nominal nom, LinkedList<EquationNode> list){
+    public LinkedList<EquationNode> multiplyFinal(Nominal nom, LinkedList<EquationNode> list) throws CanNotEval{
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
 
