@@ -59,68 +59,7 @@ public class MultiplicationOperator extends Operator {
 
     public LinkedList<EquationNode> getList() throws CanNotEval{
 
-        LinkedList<EquationNode> result = new LinkedList<EquationNode>();
-
-        LinkedList<EquationNode> nominals = new LinkedList<EquationNode>();
-        nominals.add(new Nominal(1,0));//set group to have a default value
-        LinkedList<LinkedList<EquationNode>> groups = new LinkedList<LinkedList<EquationNode>>();
-        groups.add(new Nominal(1,0).getList());//set groups to have a default value
-
-        for (EquationNode searchThrough : Terms) {//tests to see if instance of nominal
-            if (searchThrough instanceof Nominal)
-                nominals.add(searchThrough);
-            else
-                groups.add(searchThrough.getList());
-        }
-
-        Nominal simplifiedNominal = multiplyNominals(nominals);//multiply the nominals together
-        LinkedList<EquationNode> simplifiedLinkedList = multiplyLists(groups);//multiply the lists together
-        result = multiplyFinal(simplifiedNominal, simplifiedLinkedList);//multiply everything together
-
-        return result;
+       return MathOperations.multiply(Terms);
 
     }
-
-    public Nominal multiplyNominals(LinkedList<EquationNode> nomials) throws CanNotEval{
-
-        Nominal combine = new Nominal(1,0);//set default value
-        for(EquationNode cycle: nomials){
-            combine  =  new Nominal(combine.getNum() * cycle.getNum(), combine.getVar() + cycle.getVar());
-        }//combines everything together
-
-        return combine;
-
-    }
-
-    public LinkedList<EquationNode> multiplyLists(LinkedList<LinkedList<EquationNode>> groups) throws CanNotEval{
-        LinkedList<EquationNode> result = new LinkedList<EquationNode>();
-        result.add(new Nominal(1, 0));//set default value
-
-        for(LinkedList<EquationNode> groupList: groups){
-            for(EquationNode insideNominal: groupList) {
-                LinkedList<EquationNode> tmpResult = new LinkedList<EquationNode>();
-                for (EquationNode tmp : result) {
-                    tmpResult.add(new Nominal(insideNominal.getNum()*tmp.getNum(), tmp.getVar()+ insideNominal.getVar()));
-                }
-                result = tmpResult;//switch the two lists
-            }
-        }
-        return result;
-    }
-
-    public LinkedList<EquationNode> multiplyFinal(Nominal nom, LinkedList<EquationNode> list) throws CanNotEval{
-
-        LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
-
-        for(EquationNode x: list){
-            finalList.add(new Nominal((nom.getNum() * x.getNum()),(nom.getVar() + x.getVar())));
-        }
-
-        return finalList;
-    }
-
-
-
-
-
 }

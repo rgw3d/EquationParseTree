@@ -57,4 +57,11 @@ public class Fraction extends NumberStructure {
         toReturn+=")";
         return toReturn;
     }
+
+    public LinkedList<EquationNode> getTop(){
+        return Top;
+    }
+    public LinkedList<EquationNode> getBottom(){
+        return  Bottom;
+    }
 }
