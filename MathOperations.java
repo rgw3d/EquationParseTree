@@ -9,7 +9,12 @@ public class MathOperations {
 
         LinkedList<EquationNode> toMultiply = new LinkedList<EquationNode>();
 
-        
+        for (EquationNode node : Terms) {//tests to see if instance of NumberStructure
+            if (node instanceof NumberStructure)
+                numberStructures.add(node);
+            else
+                groups.add(node.getList());//this is what calls everything else down the chain/ up the tree
+        }
 
         LinkedList<EquationNode> numberStructures = new LinkedList<EquationNode>();
         numberStructures.add(new Nominal(1, 0));//set group to have a default value
