@@ -7,14 +7,6 @@ public class MathOperations {
 
     public static LinkedList<EquationNode> multiply(LinkedList<EquationNode> Terms) throws CanNotEval{
 
-        LinkedList<EquationNode> toMultiply = new LinkedList<EquationNode>();
-
-        for (EquationNode node : Terms) {//tests to see if instance of NumberStructure
-            if (node instanceof NumberStructure)
-                numberStructures.add(node);
-            else
-                groups.add(node.getList());//this is what calls everything else down the chain/ up the tree
-        }
 
         LinkedList<EquationNode> numberStructures = new LinkedList<EquationNode>();
         numberStructures.add(new Nominal(1, 0));//set group to have a default value
@@ -30,30 +22,45 @@ public class MathOperations {
         }
 
 
-        NumberStructure simplifiedNominal = multiplyNumberStructs(numberStructures);//multiply the numberStructures together
+        NumberStructure simplifiedNominal = multiplyNumberStructures(numberStructures);//multiply the numberStructures together
         LinkedList<EquationNode> simplifiedLinkedList = multiplyLists(groups);//multiply the lists together
-        LinkedList<EquationNode> result = multiplyFinal(simplifiedNominal, simplifiedLinkedList);//multiply everything together
+        LinkedList<EquationNode> result = multiplyFoil(simplifiedNominal, simplifiedLinkedList);//multiply everything together
 
         return result;
     }
-    public static NumberStructure multiplyNumberStructs(LinkedList<EquationNode> numberStructs) throws CanNotEval{
+    public static NumberStructure multiplyNumberStructures(LinkedList<EquationNode> preConverted) throws CanNotEval{
+
+        LinkedList<NumberStructure> numberStructures = new LinkedList<NumberStructure>();
+        for(EquationNode x: preConverted){
+            numberStructures.add((NumberStructure)x);//this just converts everything to NumberStructure class
+        }
 
         NumberStructure combine = new Nominal(1,0);//set default value
-        for(EquationNode cycle: numberStructs){
-            if(combine instanceof Fraction && !(cycle instanceof Fraction)){
-                combine = new Fraction(multiplyFinal(cycle,(combine.getTop()),combine.getBottom());
+        for(NumberStructure cycle: numberStructures){
+            if(combine instanceof Fraction && !(cycle instanceof Fraction)){//cycle is not a fraciton and combine is
+                combine = new Fraction(multiplyFoil((NumberStructure)cycle, combine.getTop()), combine.getBottom());
+                //multiply the top together, and then add the bottom back on to it.  make combine a fraction.
             }
-            if(!(combine instanceof Fraction) && (cycle instanceof Fraction)){
+            if(!(combine instanceof Fraction) && (cycle instanceof Fraction)){//cycle is a fraction and combine is not
+                combine = new Fraction(multiplyFoil((NumberStructure)combine, cycle.getTop()), cycle.getBottom());
+            }
+            if((combine instanceof Fraction) && (cycle instanceof Fraction)){//both are fractions
+                LinkedList<LinkedList<EquationNode>> top = new LinkedList<LinkedList<EquationNode>>();
+                LinkedList<LinkedList<EquationNode>> bot = new LinkedList<LinkedList<EquationNode>>();
 
-            }
-            if((combine instanceof Fraction) && (cycle instanceof Fraction)){
+                top.add(combine.getTop());
+                top.add(cycle.getTop());
 
+                bot.add(combine.getBottom());
+                bot.add(cycle.getBottom());
+
+                combine = new Fraction(multiplyLists(top),multiplyLists(bot));
             }
-            combine  =  new Nominal(combine.getNum() * cycle.getNum(), combine.getVar() + cycle.getVar());
+            if(!(combine instanceof Fraction) && !(cycle instanceof Fraction))
+                combine  =  new Nominal(combine.getNum() * cycle.getNum(), combine.getVar() + cycle.getVar());
         }//combines everything together
 
         return combine;
-
     }
 
     public static LinkedList<EquationNode> multiplyLists(LinkedList<LinkedList<EquationNode>> groups) throws CanNotEval{
@@ -72,7 +79,7 @@ public class MathOperations {
         return result;
     }
 
-    public static LinkedList<EquationNode> multiplyFinal(NumberStructure numberStructure, LinkedList<EquationNode> list) throws CanNotEval{
+    public static LinkedList<EquationNode> multiplyFoil(NumberStructure numberStructure, LinkedList<EquationNode> list) throws CanNotEval{
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
 
@@ -84,14 +91,17 @@ public class MathOperations {
     }
 
     public static LinkedList<EquationNode> divide(EquationNode a, EquationNode b){
+        return  new LinkedList<EquationNode>();
     }
 
 
     public static LinkedList<EquationNode> power(EquationNode a, EquationNode b){
+        return  new LinkedList<EquationNode>();
     }
 
 
     public static LinkedList<EquationNode> add(EquationNode a, EquationNode b){
+        return  new LinkedList<EquationNode>();
     }
 
 

@@ -21,23 +21,23 @@ public class AdditionOperator extends Operator {
     }
 
     public double getNum() throws CanNotEval {
-        if(canEval()) {
+       // if(canEval()) {
             double Value = 0;
             for (EquationNode x : Terms) {
                 Value += x.getNum();
             }
             return Value;
-        }
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
+        //}
+        //else
+           // throw new CanNotEval("Can Not Evaluate Expression");
     }
 
     public double getVar() throws CanNotEval {
-        if(canEval()) {
+        //if(canEval()) {
             double Var = Terms.getFirst().getVar();//var should be the same if parsed correctly
             return Var;
-        }
-        else throw new CanNotEval("Can Not Evaluate Expression");
+        //}
+        //else throw new CanNotEval("Can Not Evaluate Expression");
     }
 
     public boolean canEval() throws CanNotEval {//test to see if first everything is a nomial, then if their var values are the same
@@ -73,7 +73,7 @@ public class AdditionOperator extends Operator {
         Nominal result = new Nominal();
 
         for (EquationNode x : toCombine) {//add everything together
-            result = new Nominal(x.getNum() + result.getNum(), x.getVar() + result.getVar());
+            result = new Nominal(x.getNum() + result.getNum(), x.getVar() );
         }
         return result;
     }
@@ -85,7 +85,7 @@ public class AdditionOperator extends Operator {
         } catch (CanNotEval canNotEval) {
             canNotEval.printStackTrace();
         }
-        return "didnt work lol";
+        return Terms.getFirst().toString()+"+"+Terms.getLast().toString();
     }
 
 
@@ -120,9 +120,10 @@ public class AdditionOperator extends Operator {
                 nominals.addAll(groupList);//adds everything from the group to nominals
             }
             sortSimplifyNominals(nominals);//simplifies everything within nominals
+            return nominals;
         }
 
-        return Terms;
+       // return Terms;
     }
 
     public void sortSimplifyNominals(LinkedList<EquationNode> nominalGroup) throws CanNotEval{

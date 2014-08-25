@@ -1,3 +1,4 @@
+
 import java.util.LinkedList;
 
 /**
@@ -58,8 +59,9 @@ public class MultiplicationOperator extends Operator {
     }
 
     public LinkedList<EquationNode> getList() throws CanNotEval{
+        LinkedList<EquationNode> multiply = MathOperations.multiply(Terms);
 
-       return MathOperations.multiply(Terms);
+               return multiply;
 
     }
 }
