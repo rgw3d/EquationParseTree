@@ -59,9 +59,8 @@ public class MultiplicationOperator extends Operator {
     }
 
     public LinkedList<EquationNode> getList() throws CanNotEval{
-        LinkedList<EquationNode> multiply = MathOperations.multiply(Terms);
-
-               return multiply;
+        LinkedList<EquationNode> multiply = MathOperations.multiplyControl(Terms);
+        return multiply;
 
     }
 }

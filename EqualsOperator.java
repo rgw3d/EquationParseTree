@@ -81,14 +81,13 @@ public class EqualsOperator extends Operator {
 
         LinkedList<EquationNode> tmpRightSide = new LinkedList<EquationNode>();
         for (EquationNode tmp : Terms.getLast().getList()) {
-            tmpRightSide.add(new Nominal(tmp.getNum() * -1, tmp.getVar()));  //multiply num by -1
+            tmpRightSide.add(new Nominal(tmp.getNum() * -1, tmp.getVar()));  //multiplyControl num by -1
         }
 
         finalList.addAll(tmpRightSide);
 
-
-        AdditionOperator tmp = new AdditionOperator();//make this a temporary object to use its methods
-        tmp.sortSimplifyNominals(finalList);//simplify the string
+        MathOperations.sortSimplifyNominals(finalList);
+        //simplify the string
         //now that everything is on one side, add them all together.
 
         return finalList;

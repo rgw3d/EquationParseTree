@@ -51,13 +51,17 @@ public class DivisionOperator extends Operator{
         boolean canEval = true;
 
         for(EquationNode tmp : Terms){
-            canEval &= tmp instanceof  Nominal;//tests to see if instance of nominal.
+            canEval &= tmp instanceof  Nominal && tmp.getVar() ==0;
+            //tests to see if instance of nominal and have a var of 0
         }
-
         return canEval;
     }
 
     public LinkedList<EquationNode> getList() throws CanNotEval{
+
+        if(canEval()){
+            return MathOperations.nominalDivision(Terms);
+        }
 
         LinkedList<EquationNode> result = new LinkedList<EquationNode>();
 

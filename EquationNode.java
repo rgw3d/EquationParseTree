@@ -5,7 +5,7 @@ import java.util.LinkedList;
  *
  */
 public interface EquationNode {
-       public double getNum() throws CanNotEval;//returns the number from the operation
+    public double getNum() throws CanNotEval;//returns the number from the operation
     public double getVar() throws CanNotEval;//returns the variable from the operation
     public Nominal getNominal() throws CanNotEval; //returns a nominal
     public boolean canEval() throws CanNotEval; // if the getNum/getVar/getNominal methods can be called
