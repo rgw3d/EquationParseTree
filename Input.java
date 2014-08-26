@@ -60,7 +60,7 @@ public class Input {
             return false;
         }
 
-        Pattern p = Pattern.compile("[^(0-9,*,/,\\-,+,=,x,X,\\^)]");
+        Pattern p = Pattern.compile("[^(0-9,*,/,\\-,\\.,+,=,x,X,\\^)]");
         Matcher m = p.matcher(equation);
         if(m.find()){//detects illegal character
             System.out.print("Illegal Character");
@@ -68,7 +68,7 @@ public class Input {
         }
 
 
-        Pattern n = Pattern.compile("[\\+,\\/,\\^,\\*]{2,}");
+        Pattern n = Pattern.compile("[\\+,/,\\^,\\*]{2,}");
         Matcher o = n.matcher(equation);
         if (o.find()) {
             System.out.print("Two or more of a kind");

@@ -62,8 +62,11 @@ public class DivisionOperator extends Operator{
         if(canEval()){
             return MathOperations.nominalDivision(Terms);
         }
+        else{
+            return MathOperations.divideControl(Terms);
+        }
 
-        LinkedList<EquationNode> result = new LinkedList<EquationNode>();
+        /*LinkedList<EquationNode> result = new LinkedList<EquationNode>();
 
         LinkedList<EquationNode> nominals = new LinkedList<EquationNode>();
         nominals.add(new Nominal(1,0));//set group to have a default value
@@ -84,6 +87,7 @@ public class DivisionOperator extends Operator{
         result = multiplyFinal(simplifiedNominal, simplifiedLinkedList);//multiply everything together
 
         return result;
+        */
 
     }
 

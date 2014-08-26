@@ -95,8 +95,6 @@ public class MathOperations {
     public static LinkedList<EquationNode> addControl(LinkedList<EquationNode> Terms) throws CanNotEval{
         // if things are not so easy to add together
 
-        LinkedList<EquationNode> result = new LinkedList<EquationNode>();
-
         LinkedList<EquationNode> nominals = new LinkedList<EquationNode>();
         nominals.add(new Nominal());//set group to have a default value
         LinkedList<LinkedList<EquationNode>> groups = new LinkedList<LinkedList<EquationNode>>();
@@ -177,16 +175,28 @@ public class MathOperations {
         return false;
     }
 
-    public static LinkedList<EquationNode> divideControl(EquationNode a, EquationNode b){
-        return  new LinkedList<EquationNode>();
+
+
+    public static LinkedList<EquationNode> divideControl(LinkedList<EquationNode> Terms) throws CanNotEval{
+        Fraction toDivide = new Fraction(Terms.getFirst().getList(),Terms.getLast().getList());
+
+        LinkedList<EquationNode> toReturn = new LinkedList<EquationNode>();
+        toReturn.add(toDivide);
+
+        return toReturn;
+    }
+    public static boolean canDivide(){
+        return true;
     }
     public static LinkedList<EquationNode> nominalDivision(LinkedList<EquationNode> Terms) throws CanNotEval{
-        LinkedList<EquationNode> dividedTerms = new LinkedList<EquationNode>();
+        LinkedList<EquationNode> dividedTerm = new LinkedList<EquationNode>();
 
         Nominal tmp = new Nominal(Math.pow(Terms.getFirst().getNum(),2),0);
         for(EquationNode nom: Terms){
-            dividedTerms.add(new Nominal(nom.))
+            tmp = new Nominal(tmp.getNum()/nom.getNum(),0);
         }
+        dividedTerm.add(tmp);
+        return  dividedTerm;
     }
 
 
