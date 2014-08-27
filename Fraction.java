@@ -64,4 +64,7 @@ public class Fraction extends NumberStructure {
     public LinkedList<EquationNode> getBottom(){
         return  Bottom;
     }
+    @Override public int hashCode() {
+        System.out.print("wow");
+        return 42; }
 }

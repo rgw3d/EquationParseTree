@@ -108,7 +108,7 @@ public class MathOperations {
         }
 
         if (canAddEasy(nominals)) {//if they are all the same nominal type.  its faster
-            Nominal tmp = combineAll(nominals); //since nominals is used later we just clear it
+            NumberStructure tmp = combineAll(nominals); //since nominals is used later we just clear it
             nominals.clear();
             nominals.add(tmp);
         }
@@ -116,45 +116,134 @@ public class MathOperations {
         for(LinkedList<EquationNode> groupList: groups){
             nominals.addAll(groupList);//adds everything from the group to nominals
         }
-        sortSimplifyNominals(nominals);//simplifies everything within nominals
+        sortSimplifyNumberStructures(nominals);//simplifies everything within nominals
         return nominals;
     }
 
-    public static Nominal combineAll(LinkedList<EquationNode> toCombine) throws CanNotEval {
-        Nominal result = new Nominal(0,0);
+    public static NumberStructure combineAll(LinkedList<EquationNode> toCombine) throws CanNotEval {
 
-        for (EquationNode x : toCombine) {//add everything together
-            result = new Nominal(x.getNum() + result.getNum(), x.getVar() );
+        if(toCombine.getFirst() instanceof Nominal) {
+            NumberStructure result = new Nominal(0, 0);
+
+            for (EquationNode x : toCombine) {//add everything together
+                result = new Nominal(x.getNum() + result.getNum(), x.getVar());
+            }
+            return result;
         }
-        return result;
+        else{//instance of fraction
+            Fraction bottom = (Fraction)toCombine.getFirst();
+            NumberStructure result  = new Fraction(new LinkedList<EquationNode>(),bottom.getBottom());
+            //give it a default fraction with the same bottom
+            LinkedList<NumberStructure> numberStructures  = new LinkedList<NumberStructure>();
+            for(EquationNode x: toCombine){
+                    numberStructures.add((NumberStructure)x);
+            }
+            for (NumberStructure x : numberStructures) {//add everything together
+                LinkedList<EquationNode> tmp = new LinkedList<EquationNode>();
+                tmp.addAll(x.getTop());
+                tmp.addAll(result.getTop());
+                result = new Fraction(addControl(tmp), bottom.getBottom());
+            }
+            return result;
+        }
     }
 
-    public static void sortSimplifyNominals(LinkedList<EquationNode> nominalGroup) throws CanNotEval{
+    public static void sortSimplifyNumberStructures(LinkedList<EquationNode> preConverted) throws CanNotEval{
+        //first sortSimpify the nominals only.  fractions later if there are any.
+        LinkedList<EquationNode> result = new LinkedList<EquationNode>();
 
-        Hashtable<Double, LinkedList<EquationNode>> SortedNominals = new Hashtable<Double, LinkedList<EquationNode>>();
-        ArrayList<Double> varsAdded = new ArrayList<Double>();
+        LinkedList<NumberStructure> nominalsOnly  = new LinkedList<NumberStructure>();
+        for(EquationNode x: preConverted){
+            if(x instanceof  Nominal)
+                nominalsOnly.add((NumberStructure)x);
+        }
+        if(nominalsOnly.size()>0){//if there is any nominals, add them
+            sortSimplifyNominals(result, nominalsOnly);
+        }
 
-        for (EquationNode nom : nominalGroup) {//add everyone to their respectieve gropus
-            double var = nom.getVar();
+        //now check for fractions
+        LinkedList<NumberStructure> fractionsOnly = new LinkedList<NumberStructure>();
+        for(EquationNode x: preConverted){
+            if(x instanceof Fraction)
+                fractionsOnly.add((NumberStructure) x);//this just converts everything to NumberStructure class
+        }
+        if(fractionsOnly.size()>0) {
+            sortSimplifyFractions(result, fractionsOnly);
+        }
+
+        preConverted.clear();
+        preConverted.addAll(result);
+
+    }
+
+    private static void sortSimplifyFractions(LinkedList<EquationNode> result, LinkedList<NumberStructure> fractionsOnly) throws CanNotEval {
+        Hashtable<LinkedList<EquationNode>, LinkedList<EquationNode>> SortedNominals = new Hashtable<LinkedList<EquationNode>, LinkedList<EquationNode>>();
+        ArrayList<LinkedList<EquationNode>> varsAdded = new ArrayList<LinkedList<EquationNode>>();
+
+        for (NumberStructure nom : fractionsOnly) {//add everyone to their respectieve gropus
+            LinkedList<EquationNode> nomBottom = nom.getBottom();
+            /*
+            boolean addedValue = false;
+            for(LinkedList<EquationNode> addedVars: varsAdded){
+                if(addedVars.equals(nom.getBottom())){
+                    SortedNominals.get(addedVars).add(nom);//add the fraction value to the hashtable
+                    addedValue = true;
+                    break;//break out of the for loop because we have added what is necessary to the hashtable
+                }
+            }
+            if(!addedValue){//did not add value to the hash table
+                //make a new key
+                LinkedList<EquationNode> tmp = new LinkedList<EquationNode>();
+                tmp.add(nom);
+                SortedNominals.put(nomBottom, tmp);
+                varsAdded.add(nomBottom);
+            }
+            */
+
             try {
-                SortedNominals.get(var).add(nom);
+                SortedNominals.get(nomBottom).add(nom);
             } catch (NullPointerException E) {//key was not mapped to a value
                 LinkedList<EquationNode> tmp = new LinkedList<EquationNode>();
                 tmp.add(nom);
-                SortedNominals.put(var, tmp);
-                varsAdded.add(var);
+                SortedNominals.put(nomBottom, tmp);
+                varsAdded.add(nomBottom);
+            }
+
+        }
+
+        LinkedList<EquationNode> finalNomials = new LinkedList<EquationNode>();
+        for (LinkedList<EquationNode> x : varsAdded) {
+            NumberStructure simplifed = combineAll(SortedNominals.get(x));
+            finalNomials.add(simplifed);
+        }
+
+
+
+        result.addAll(finalNomials);
+    }
+
+    private static void sortSimplifyNominals(LinkedList<EquationNode> result, LinkedList<NumberStructure> nominalsOnly) throws CanNotEval {
+        Hashtable<Double, LinkedList<EquationNode>> SortedNominals = new Hashtable<Double, LinkedList<EquationNode>>();
+        ArrayList<Double> varsAdded = new ArrayList<Double>();
+
+        for (EquationNode nom : nominalsOnly) {//add everyone to their respectieve gropus
+            Double nomBottom = nom.getVar();
+            try {
+                SortedNominals.get(nomBottom).add(nom);
+            } catch (NullPointerException E) {//key was not mapped to a value
+                LinkedList<EquationNode> tmp = new LinkedList<EquationNode>();
+                tmp.add(nom);
+                SortedNominals.put(nomBottom, tmp);
+                varsAdded.add(nomBottom);
             }
         }
 
         LinkedList<EquationNode> finalNomials = new LinkedList<EquationNode>();
         for (Double x : varsAdded) {
-            Nominal simplifed = combineAll(SortedNominals.get(x));
+            NumberStructure simplifed = combineAll(SortedNominals.get(x));
             finalNomials.add(simplifed);
         }
-
-        nominalGroup.clear();
-        nominalGroup.addAll(finalNomials);
-
+        result.addAll(finalNomials);
     }
 
     public static boolean canAddEasy(LinkedList<EquationNode> Parts) throws CanNotEval {

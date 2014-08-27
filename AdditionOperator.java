@@ -46,7 +46,7 @@ public class AdditionOperator extends Operator {
 
     public Nominal getNominal() throws CanNotEval {
         if(canEval())
-            return MathOperations.combineAll(Terms);
+            return (Nominal)MathOperations.combineAll(Terms);
         else
             throw new CanNotEval("Can Not Evaluate Expression");
     }

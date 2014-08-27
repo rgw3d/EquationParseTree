@@ -86,7 +86,7 @@ public class EqualsOperator extends Operator {
 
         finalList.addAll(tmpRightSide);
 
-        MathOperations.sortSimplifyNominals(finalList);
+        MathOperations.sortSimplifyNumberStructures(finalList);
         //simplify the string
         //now that everything is on one side, add them all together.
 
