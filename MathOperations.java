@@ -10,26 +10,51 @@ public class MathOperations {
     public static LinkedList<EquationNode> multiplyControl(LinkedList<EquationNode> Terms) throws CanNotEval{
 
 
-        LinkedList<EquationNode> numberStructures = new LinkedList<EquationNode>();
-        numberStructures.add(new Nominal(1, 0));//set group to have a default value
+        LinkedList<EquationNode> nominals = new LinkedList<EquationNode>();
+        nominals.add(new Nominal(1, 0));//set group to have a default value
 
         LinkedList<LinkedList<EquationNode>> groups = new LinkedList<LinkedList<EquationNode>>();
         groups.add(new Nominal(1,0).getList());//set groups to have a default value
 
         for (EquationNode node : Terms) {//tests to see if instance of NumberStructure
-            if (node instanceof NumberStructure)
-                numberStructures.add(node);
-            else
-                groups.add(node.getList());//this is what calls everything else down the chain/ up the tree
+          // if (node instanceof Nominal)
+            //    nominals.add(node);
+           //else
+                groups.add(node.getList());//this is what calls jeverything else down the chain/ up the tree
         }
 
+        /*
+        multiply nominals.  they are easy to do and pick out.
+        however, with the addition of fractions, now lists of fractions must be dealt with.
+        so, the new strategy is to multiply nominals first, then multiply lists together seperatly.
+        then combine them at the end.
+        needs to be able to do recursively (fractions in fractions in fractions)
+        */
 
-        NumberStructure simplifiedNominal = multiplyNumberStructures(numberStructures);//multiplyControl the numberStructures together
-        LinkedList<EquationNode> simplifiedLinkedList = multiplyLists(groups);//multiplyControl the lists together
-        LinkedList<EquationNode> result = multiplyFoil(simplifiedNominal, simplifiedLinkedList);//multiplyControl everything together
+       // Nominal multipliedNominal = multiplyNominals(nominals);//multiply the list of nominals together.
+
+
+
+        //NumberStructure simplifiedNominal = multiplyNumberStructures(nominals);//multiplyControl the numberStructures together
+        LinkedList<EquationNode> simplifiedList = multiplyLists(groups);//multiplyControl the lists together
+        //LinkedList<EquationNode> result = multiplyFoil(simplifiedNominal, simplifiedLinkedList);//multiplyControl everything together
+
+        //return result;
+        return simplifiedList;
+    }
+    public static Nominal multiplyNominals(LinkedList<EquationNode> nodes) throws CanNotEval{
+
+        Nominal result = Nominal.One;
+
+        for(EquationNode node: nodes){
+            result = new Nominal(result.getNum() *node.getNum(), result.getVar() + node.getVar());
+        }
 
         return result;
+
+
     }
+
     public static NumberStructure multiplyNumberStructures(LinkedList<EquationNode> preConverted) throws CanNotEval{
 
         LinkedList<NumberStructure> numberStructures = new LinkedList<NumberStructure>();
@@ -40,11 +65,11 @@ public class MathOperations {
         NumberStructure combine = new Nominal(1,0);//set default value
         for(NumberStructure cycle: numberStructures){
             if(combine instanceof Fraction && !(cycle instanceof Fraction)){//cycle is not a fraciton and combine is
-                combine = new Fraction(multiplyFoil((NumberStructure)cycle, combine.getTop()), combine.getBottom());
+                combine = new Fraction(multiplyFoil(cycle, combine.getTop()), combine.getBottom());
                 //multiplyControl the top together, and then add the bottom back on to it.  make combine a fraction.
             }
             if(!(combine instanceof Fraction) && (cycle instanceof Fraction)){//cycle is a fraction and combine is not
-                combine = new Fraction(multiplyFoil((NumberStructure)combine, cycle.getTop()), cycle.getBottom());
+                combine = new Fraction(multiplyFoil(combine, cycle.getTop()), cycle.getBottom());
             }
             if((combine instanceof Fraction) && (cycle instanceof Fraction)){//both are fractions
                 LinkedList<LinkedList<EquationNode>> top = new LinkedList<LinkedList<EquationNode>>();
@@ -70,13 +95,18 @@ public class MathOperations {
         result.add(new Nominal(1, 0));//set default value
 
         for(LinkedList<EquationNode> groupList: groups){
-            for(EquationNode insideNominal: groupList) {
-                LinkedList<EquationNode> tmpResult = new LinkedList<EquationNode>();
-                for (EquationNode tmp : result) {
-                    tmpResult.add(new Nominal(insideNominal.getNum()*tmp.getNum(), tmp.getVar()+ insideNominal.getVar()));
+            LinkedList<EquationNode> tmpResult = new LinkedList<EquationNode>();
+            for(EquationNode insideNominal: groupList) {//uses the top for loops list
+
+                for (EquationNode tmp : result) {//multiplies against result list
+                    LinkedList<EquationNode> multiplyList = new LinkedList<EquationNode>();
+                    multiplyList.add(insideNominal);
+                    multiplyList.add(tmp);
+                    tmpResult.add(multiplyNumberStructures(multiplyList));
                 }
-                result = tmpResult;//switch the two lists
+
             }
+            result = tmpResult;//switch the two lists
         }
         return result;
     }

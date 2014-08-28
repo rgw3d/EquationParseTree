@@ -46,15 +46,15 @@ public class Fraction extends NumberStructure {
     }
 
     public String toString(){
-        String toReturn = "(";
+        String toReturn = "((";
         for(EquationNode fract: Top){
-            toReturn+=fract.toString();
+            toReturn+=" "+fract.toString();
         }
-        toReturn+="/";
+        toReturn+=")/(";
         for(EquationNode fract: Bottom){
             toReturn+=fract.toString();
         }
-        toReturn+=")";
+        toReturn+="))";
         return toReturn;
     }
 
@@ -64,7 +64,24 @@ public class Fraction extends NumberStructure {
     public LinkedList<EquationNode> getBottom(){
         return  Bottom;
     }
-    @Override public int hashCode() {
-        System.out.print("wow");
-        return 42; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Fraction fraction = (Fraction) o;
+
+        if (!Bottom.equals(fraction.Bottom)) return false;
+        if (!Top.equals(fraction.Top)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Top.hashCode();
+        result = 31 * result + Bottom.hashCode();
+        return result;
+    }
 }

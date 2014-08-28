@@ -55,4 +55,45 @@ public class Nominal extends NumberStructure{
     }
 
 
+    /*@Override
+    public boolean equals(Object anObject){
+        if(anObject ==null){
+            return false;
+        }
+        if(anObject instanceof Nominal){
+            Nominal nominal = (Nominal)anObject;
+            if(nominal.getVar() == getVar() && nominal.getNum() == getNum()){
+                return true;
+            }
+            return false;
+        }
+        else
+            return false;
+
+    }
+    */
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Nominal nominal = (Nominal) o;
+
+        if (Double.compare(nominal.Num, Num) != 0) return false;
+        if (Double.compare(nominal.Var, Var) != 0) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(Num);
+        result = (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(Var);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
 }
