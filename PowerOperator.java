@@ -22,20 +22,18 @@ public class PowerOperator extends Operator {
 
     private boolean RaiseVar = false;
 
-    public double getNum() throws CanNotEval {
-        if (canEval() && !RaiseVar)
+    public double getNum() {
+        if (!RaiseVar)
             return Math.pow(Terms.getFirst().getNum(), Terms.getLast().getNum());
         else
-            throw new CanNotEval("Can Not Evaluate Expression");
-
-
+            return Terms.getFirst().getNum();
     }
 
-    public double getVar() throws CanNotEval {
-        if(canEval() && RaiseVar)
+    public double getVar() {
+        if(RaiseVar)
             return Terms.getFirst().getVar() * Terms.getLast().getVar();
         else
-            throw new CanNotEval("Can Not Evaluate Expression");
+            return Terms.getFirst().getVar();
     }
 
     public Nominal getNominal() throws CanNotEval {

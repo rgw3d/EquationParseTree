@@ -16,28 +16,21 @@ public class MultiplicationOperator extends Operator {
         this.Terms = Terms;
     }
 
-    public double getNum() throws CanNotEval{
-        if(canEval()) {
+    public double getNum() {
             float value = 1;
             for (EquationNode tmp : Terms) {
                 value *= tmp.getNum();
             }
             return value;
-        }
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public double getVar() throws CanNotEval{
-        if(canEval()) {
+    public double getVar(){
             float value = 1;
             for (EquationNode tmp : Terms) {
                 value *= tmp.getVar();
             }
             return value;
-        }
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
+
     }
 
     public Nominal getNominal() throws CanNotEval {

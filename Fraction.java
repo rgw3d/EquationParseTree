@@ -9,28 +9,41 @@ public class Fraction extends NumberStructure {
 
     public Fraction(LinkedList<EquationNode> top, LinkedList<EquationNode> bottom) {
         Top = top;
+        MathOperations.removeZeros(bottom);
+        if(bottom.size() ==0){//if it is zero, then the zero has been removed and it is a divide by zero error
+            throw new IllegalArgumentException("Error: Divisor is 0");
+        }
         Bottom = bottom;
 
     }
     public Fraction(LinkedList<EquationNode> top, NumberStructure bottom) {
         Top = top;
+        if(bottom.equals(new Nominal())){
+            throw new IllegalArgumentException("Error: Divisor is 0");
+        }
         Bottom.add(bottom);
     }
     public Fraction(NumberStructure top, LinkedList<EquationNode> bottom) {
         Top.add(top);
+        if(bottom.size() ==0){//if it is zero, then the zero has been removed and it is a divide by zero error
+            throw new IllegalArgumentException("Error: Divisor is 0");
+        }
         Bottom = bottom;
     }
     public Fraction(NumberStructure top, NumberStructure bottom) {
         Top.add(top);
+        if(bottom.equals(new Nominal())){
+            throw new IllegalArgumentException("Error: Divisor is 0");
+        }
         Bottom.add(bottom);
     }
 
-    public double getNum() throws CanNotEval {
-        return 0;
+    public double getNum() {
+        return -1;
     }
 
-    public double getVar() throws CanNotEval {
-        return 0;
+    public double getVar(){
+        return -1;
     }
 
     public Nominal getNominal() throws CanNotEval {

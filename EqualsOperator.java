@@ -16,32 +16,22 @@ public class EqualsOperator extends Operator {
         this.Terms = Terms;
     }
 
-    public double getNum() throws CanNotEval {
-        if(canEval()) {
+    public double getNum() {
             double Value = Terms.getFirst().getNum();//subtracts rightside from left side
             Value -= Terms.getLast().getNum();
             return Value;
-        }
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
+
     }
 
-    public double getVar() throws CanNotEval {
-        if(canEval()) {
+    public double getVar() {
             double Value = Terms.getFirst().getVar();//subtracts rightside from left side
             Value -= Terms.getLast().getVar();
             return Value;
-        }
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
 
     }
 
-    public Nominal getNominal() throws CanNotEval {
-        if (canEval())
+    public Nominal getNominal() {
             return new Nominal(getNum(), getVar());
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
 
     }
 
@@ -86,9 +76,8 @@ public class EqualsOperator extends Operator {
 
         finalList.addAll(tmpRightSide);
 
-        MathOperations.sortSimplifyNumberStructures(finalList);
-        //simplify the string
-        //now that everything is on one side, add them all together.
+        MathOperations.sortSimplifyNumberStructures(finalList);//now that everything is on one side, add them all together.
+        MathOperations.removeZeros(finalList);
 
         return finalList;
     }

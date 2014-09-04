@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -6,23 +7,28 @@ public class Input {
 
     public static void main(String[] args) throws UnparsedString, CanNotEval {
 
-        System.out.println("Enter an expression to see it parsed");
+        while(true) {
+            System.out.println("Enter an expression to see it parsed");
 
-        String input = new Scanner(System.in).nextLine();
+            String input = new Scanner(System.in).nextLine();
+            Date start = new Date();
+            if (!isEquation(input)) {
+                System.out.println("\nBad Equation. Please Revise");
+                return;
+            }
 
-        if (!isEquation(input)) {
-            System.out.println("\nBad Equation. Please Revise");
-            return;
+            input = handSanitizer(input);
+
+            EqualsOperator equalsOperator = new EqualsOperator();
+            Parser parser = new Parser();
+            equalsOperator.addTerm(parser.ParseEquation(input.substring(0, input.indexOf("="))));//parse the equation into the Parser
+            equalsOperator.addTerm(parser.ParseEquation(input.substring(input.indexOf("=") + 1)));//parse the equation into the Parser
+
+            System.out.println(equalsOperator.getList().toString());
+            System.out.println("It took " + (new Date().getTime() - start.getTime()) + " milliseconds");
+            System.out.println("");
         }
 
-        input = handSanitizer(input);
-
-        EqualsOperator equalsOperator = new EqualsOperator();
-        Parser parser = new Parser();
-        equalsOperator.addTerm(parser.ParseEquation(input.substring(0, input.indexOf("="))));//parse the equation into the Parser
-        equalsOperator.addTerm(parser.ParseEquation(input.substring(input.indexOf("=")+1)));//parse the equation into the Parser
-
-        System.out.println(equalsOperator.getList().toString());
 
 
 
@@ -93,6 +99,8 @@ public class Input {
         fix=fix.replace("X","x");//just cuz
 
         fix=fix.replace("^+-","^-"); //common error that happens after one of the above methods run. negative exponents
+
+        fix=fix.replace("=+-","=0+-"); //because
 
         //this will be updated later as I fix all the syntax errors that come with exponents and parentheses
         System.out.println("\tReformatted Equation: "+ fix);

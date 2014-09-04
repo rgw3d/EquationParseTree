@@ -67,9 +67,11 @@ public class MathOperations {
             if(combine instanceof Fraction && !(cycle instanceof Fraction)){//cycle is not a fraciton and combine is
                 combine = new Fraction(multiplyFoil(cycle, combine.getTop()), combine.getBottom());
                 //multiplyControl the top together, and then add the bottom back on to it.  make combine a fraction.
+                continue;
             }
             if(!(combine instanceof Fraction) && (cycle instanceof Fraction)){//cycle is a fraction and combine is not
                 combine = new Fraction(multiplyFoil(combine, cycle.getTop()), cycle.getBottom());
+                continue;
             }
             if((combine instanceof Fraction) && (cycle instanceof Fraction)){//both are fractions
                 LinkedList<LinkedList<EquationNode>> top = new LinkedList<LinkedList<EquationNode>>();
@@ -82,9 +84,11 @@ public class MathOperations {
                 bot.add(cycle.getBottom());
 
                 combine = new Fraction(multiplyLists(top),multiplyLists(bot));
+                continue;
             }
             if(!(combine instanceof Fraction) && !(cycle instanceof Fraction))
                 combine  =  new Nominal(combine.getNum() * cycle.getNum(), combine.getVar() + cycle.getVar());
+
         }//combines everything together
 
         return combine;
@@ -310,8 +314,14 @@ public class MathOperations {
     public static LinkedList<EquationNode> nominalDivision(LinkedList<EquationNode> Terms) throws CanNotEval{
         LinkedList<EquationNode> dividedTerm = new LinkedList<EquationNode>();
 
-        Nominal tmp = new Nominal(Math.pow(Terms.getFirst().getNum(),2),0);
+        if(Terms.getLast().getNum()==0){
+            throw new IllegalArgumentException("Error: Divisor is 0");
+        }
+
+
+        Nominal tmp = new Nominal(Math.pow(Terms.getFirst().getNum(),2),0);//raise the first one to the second power.  we will divide it by itself
         for(EquationNode nom: Terms){
+
             tmp = new Nominal(tmp.getNum()/nom.getNum(),0);
         }
         dividedTerm.add(tmp);
@@ -324,4 +334,34 @@ public class MathOperations {
         return  new LinkedList<EquationNode>();
     }
 
+    public static void removeZeros(LinkedList<EquationNode> list) {
+        LinkedList<NumberStructure> numberStructures = new LinkedList<NumberStructure>();
+        for(EquationNode x: list){
+            numberStructures.add((NumberStructure)x);//this just converts everything to NumberStructure class
+        }
+
+        for(NumberStructure node: numberStructures){
+            if(node.equals(new Nominal(0,0))||node.getNum() == 0){//if it equals zero
+                numberStructures.remove(node);
+                continue;
+            }
+
+            if(node instanceof Fraction){
+                LinkedList<EquationNode> top = node.getTop();
+                removeZeros(top);
+                LinkedList<EquationNode> bot = node.getBottom();
+                removeZeros(bot);
+                if(bot.size() ==0){//if it is zero, then the zero has been removed and it is a divide by zero error
+                    throw new IllegalArgumentException("Error: Divisor is 0");
+                }
+                int indx = numberStructures.indexOf(node);
+                numberStructures.remove(indx);
+                numberStructures.add(indx,new Fraction(top,bot));
+            }
+
+        }
+
+        list.clear();
+        list.addAll(numberStructures);
+    }
 }

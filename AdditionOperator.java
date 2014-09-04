@@ -20,24 +20,17 @@ public class AdditionOperator extends Operator {
         Terms.add(new Nominal(Double.parseDouble(right),0));
     }
 
-    public double getNum() throws CanNotEval {
-       // if(canEval()) {
+    public double getNum() {
             double Value = 0;
             for (EquationNode x : Terms) {
                 Value += x.getNum();
             }
             return Value;
-        //}
-        //else
-           // throw new CanNotEval("Can Not Evaluate Expression");
     }
 
-    public double getVar() throws CanNotEval {
-        //if(canEval()) {
+    public double getVar() {
             double Var = Terms.getFirst().getVar();//var should be the same if parsed correctly
             return Var;
-        //}
-        //else throw new CanNotEval("Can Not Evaluate Expression");
     }
 
     public boolean canEval() throws CanNotEval {//test to see if first everything is a nomial, then if their var values are the same
