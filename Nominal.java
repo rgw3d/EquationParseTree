@@ -49,29 +49,15 @@ public class Nominal extends NumberStructure{
         return tmp;
     }
 
-
+    //"Number: "+getNum() + "  Var: "+getVar());
     public String toString(){
-        return ("Number: "+getNum() + "  Var: "+getVar());
-    }
-
-
-    /*@Override
-    public boolean equals(Object anObject){
-        if(anObject ==null){
-            return false;
+        String toReturn = ""+getNum();
+        if(getVar()!=0){
+            toReturn+="x^"+getVar();
         }
-        if(anObject instanceof Nominal){
-            Nominal nominal = (Nominal)anObject;
-            if(nominal.getVar() == getVar() && nominal.getNum() == getNum()){
-                return true;
-            }
-            return false;
-        }
-        else
-            return false;
 
+        return toReturn;
     }
-    */
 
     @Override
     public boolean equals(Object o) {

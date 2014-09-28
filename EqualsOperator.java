@@ -67,7 +67,7 @@ public class EqualsOperator extends Operator {
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
 
-        finalList.addAll(Terms.getFirst().getList());
+        finalList.addAll(Terms.getFirst().getList());//get the left side of the equation and store it in the
 
         LinkedList<EquationNode> tmpRightSide = new LinkedList<EquationNode>();
         for (EquationNode tmp : Terms.getLast().getList()) {
@@ -77,7 +77,18 @@ public class EqualsOperator extends Operator {
         finalList.addAll(tmpRightSide);
 
         MathOperations.sortSimplifyNumberStructures(finalList);//now that everything is on one side, add them all together.
+        MathOperations.simplifyFractionsFromList(finalList);
+
         MathOperations.removeZeros(finalList);
+
+        //now we are going to run the whole thing through again to simplify more things.
+
+        /*LinkedList<EquationNode> newTerm = new LinkedList<EquationNode>();
+        newTerm.addAll(finalList);
+        finalList.clear();
+        finalList.addAll(newTerm.getFirst().getList());
+        MathOperations.removeZeros(finalList);
+        */
 
         return finalList;
     }

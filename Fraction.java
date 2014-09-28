@@ -8,6 +8,11 @@ public class Fraction extends NumberStructure {
     public LinkedList<EquationNode> Bottom = new LinkedList<EquationNode>();
 
     public Fraction(LinkedList<EquationNode> top, LinkedList<EquationNode> bottom) {
+
+        MathOperations.removeZeros(top);
+        if(top.size() == 0){
+            top.add(new Nominal(0,0));
+        }
         Top = top;
         MathOperations.removeZeros(bottom);
         if(bottom.size() ==0){//if it is zero, then the zero has been removed and it is a divide by zero error
@@ -59,15 +64,27 @@ public class Fraction extends NumberStructure {
     }
 
     public String toString(){
-        String toReturn = "((";
-        for(EquationNode fract: Top){
-            toReturn+=" "+fract.toString();
+        String toReturn;
+
+        if(Bottom.size() ==1 && Bottom.getFirst().equals(Nominal.One)){//if denominator is 1
+            toReturn = "(";
+            for (EquationNode fract : Top) {
+                toReturn += " " + fract.toString();
+            }
+            toReturn +=")";
         }
-        toReturn+=")/(";
-        for(EquationNode fract: Bottom){
-            toReturn+=fract.toString();
+        else {
+
+            toReturn = "((";
+            for (EquationNode fract : Top) {
+                toReturn += " " + fract.toString();
+            }
+            toReturn += ")/(";
+            for (EquationNode fract : Bottom) {
+                toReturn += fract.toString();
+            }
+            toReturn += "))";
         }
-        toReturn+="))";
         return toReturn;
     }
 

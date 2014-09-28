@@ -1,6 +1,9 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
+
+import static java.util.Arrays.*;
 
 /**
  * Created by rgw3d on 8/16/2014.
@@ -340,10 +343,11 @@ public class MathOperations {
             numberStructures.add((NumberStructure)x);//this just converts everything to NumberStructure class
         }
 
+        LinkedList<EquationNode> simplifiedStructures = new LinkedList<EquationNode>();//the final list that if the node passes it is added to this.
         for(NumberStructure node: numberStructures){
-            if(node.equals(new Nominal(0,0))||node.getNum() == 0){//if it equals zero
-                numberStructures.remove(node);
-                continue;
+            if(!(node.equals(new Nominal(0,0))||node.getNum() == 0) && node instanceof Nominal ){//if not zero, and a nominal
+                //numberStructures.remove(node);//so this actually causes errors. so i wont use it
+                simplifiedStructures.add(node);
             }
 
             if(node instanceof Fraction){
@@ -354,14 +358,190 @@ public class MathOperations {
                 if(bot.size() ==0){//if it is zero, then the zero has been removed and it is a divide by zero error
                     throw new IllegalArgumentException("Error: Divisor is 0");
                 }
-                int indx = numberStructures.indexOf(node);
-                numberStructures.remove(indx);
-                numberStructures.add(indx,new Fraction(top,bot));
+                simplifiedStructures.add(new Fraction(top,bot));
             }
 
         }
 
         list.clear();
-        list.addAll(numberStructures);
+        list.addAll(simplifiedStructures);
+    }
+
+    public static void simplifyFractionsFromList(LinkedList<EquationNode> nodes) {
+
+        LinkedList<EquationNode> returnList = new LinkedList<EquationNode>();
+
+        for(EquationNode x: nodes){
+            if(x instanceof Fraction){
+
+                returnList.add(simplifyFractions((Fraction) x));
+            }
+            else {
+                returnList.add(x);
+            }
+        }
+
+        nodes.clear();
+        nodes.addAll(returnList);
+
+    }
+    public static EquationNode simplifyFractions(Fraction fraction) {
+
+        for(EquationNode top: fraction.getTop()){//simplify underliying fractions
+            if(top instanceof Fraction){//could be a fraction in a fraction
+                int tmpIndx = fraction.getTop().indexOf(top);//get indx of fraction
+                fraction.getTop().remove(top);//remove the object from the list
+                fraction.getTop().add(tmpIndx,simplifyFractions((Fraction)top));//add the "simplifed" object back in
+            }
+
+        }
+        for(EquationNode bot: fraction.getBottom()){//simplify underlying fractions
+            if(bot instanceof Fraction){//could be a fraction in a fraction
+                int tmpIndx = fraction.getTop().indexOf(bot);//get indx of fraction
+                fraction.getBottom().remove(bot);//remove the object from the list
+                fraction.getBottom().add(tmpIndx,simplifyFractions((Fraction)bot));//add the "simplifed" object back in
+            }
+
+        }
+
+        boolean canDivide = true;
+
+        ArrayList<Integer> topDivisors = new ArrayList<Integer>();
+        outerTopLoop:
+        for(EquationNode outside: fraction.getTop()){//these should all be nominals.  if not, clear list and break
+            int possibleOutsideGCD = 0;
+            for(int i = 0; i<fraction.getTop().size(); i++){
+            //for(EquationNode inside: fraction.getTop()){//
+                if(fraction.getTop().get(i) instanceof Nominal){
+                    double outsideNum = outside.getNum();
+                    double insideNum = fraction.getTop().get(i).getNum();
+
+                    if(outsideNum == Math.round(outsideNum) && insideNum == Math.round(insideNum)){//if both are ints
+                        if(possibleOutsideGCD == 0){
+                            possibleOutsideGCD=GCD((int)outsideNum,(int)insideNum);
+                        }
+                        else{
+                            if(!((int)insideNum%possibleOutsideGCD==0)){//so the factor doesnt work
+                                possibleOutsideGCD = GCD((int)outsideNum,(int)insideNum);
+                                i=0;//reseting the loop so that this new gcd value is tested.  if the value is 1, then it will work (no infinite loop)
+                                continue;
+                                //reset the loop and then continue; to loop through again
+
+                            }//if false, then its good -- do nothing because this factor works.
+                        }
+                    }
+                    else
+                    {
+                        canDivide =false;
+                        topDivisors.clear();
+                        break outerTopLoop;
+                    }
+
+                }
+                else{
+                    canDivide = false;
+                    topDivisors.clear();
+                    break outerTopLoop;
+                }
+            }
+            //this is where we add the possibleGCD value to the arraylist if it has survived
+            if(possibleOutsideGCD!=1 && possibleOutsideGCD!=0){
+                topDivisors.add(possibleOutsideGCD);
+            }
+
+        }
+
+        ArrayList<Integer> botDivisors = new ArrayList<Integer>();
+        outerBotLoop:
+        for(EquationNode outside: fraction.getBottom()){//these should all be nominals.  if not, clear list and break
+            int possibleOutsideGCD = 0;
+            for(int i = 0; i<fraction.getBottom().size(); i++){
+                //for(EquationNode inside: fraction.getTop()){//
+                if(fraction.getBottom().get(i) instanceof Nominal){
+                    double outsideNum = outside.getNum();
+                    double insideNum = fraction.getBottom().get(i).getNum();
+
+                    if(outsideNum == Math.round(outsideNum) && insideNum == Math.round(insideNum)){//if both are ints
+                        if(possibleOutsideGCD == 0){
+                            possibleOutsideGCD=GCD((int)outsideNum,(int)insideNum);
+                        }
+                        else{
+                            if(!((int)insideNum%possibleOutsideGCD==0)){//so the factor doesnt work
+                                possibleOutsideGCD = GCD((int)outsideNum,(int)insideNum);
+                                i=0;//reseting the loop so that this new gcd value is tested.  if the value is 1, then it will work (no infinite loop)
+                                continue;
+                                //reset the loop and then continue; to loop through again
+
+                            }//if false, then its good -- do nothing because this factor works.
+                        }
+                    }
+                    else
+                    {
+                        canDivide = false;
+                        botDivisors.clear();
+                        break outerBotLoop;
+                    }
+
+                }
+                else{
+                    canDivide = false;
+                    botDivisors.clear();
+                    break outerBotLoop;
+                }
+            }
+            //this is where we add the possibleGCD value to the arraylist if it has survived
+            if(possibleOutsideGCD!=1 && possibleOutsideGCD!=0){
+                botDivisors.add(possibleOutsideGCD);
+            }
+
+        }
+
+        //now both of the lists have the GCD and can be used to find something to divide by.
+
+        if(canDivide) {
+            Integer[] topDiv = topDivisors.toArray(new Integer[topDivisors.size()]);//its late
+            Integer[] botDiv = botDivisors.toArray(new Integer[botDivisors.size()]);//im tired and this might work
+
+            Arrays.sort(topDiv);//yay sorting
+            Arrays.sort(botDiv);//ascending order
+
+            bottomFractLoop:
+            for (int x = botDiv.length-1; x >= 0; x--) {
+                for (int y = topDiv.length-1; x >= 0; y--) {
+                    if (topDiv[y] % botDiv[x] == 0) {//yaya it actually works. this means that the greatist divisor has been found.
+                        LinkedList<EquationNode> tmpTop = new LinkedList<EquationNode>();
+                        LinkedList<EquationNode> tmpBot = new LinkedList<EquationNode>();
+
+                        for (EquationNode node: fraction.getTop()){
+                            tmpTop.add(new Nominal((node.getNum()/botDiv[x]),node.getVar()));
+                        }
+                        for (EquationNode node: fraction.getBottom()){
+                            tmpBot.add(new Nominal((node.getNum()/botDiv[x]),node.getVar()));
+                        }
+
+                        fraction.getTop().clear();
+                        fraction.getTop().addAll(tmpTop);
+
+                        fraction.getBottom().clear();
+                        fraction.getBottom().addAll(tmpBot);
+
+
+
+                            break bottomFractLoop;
+                    }
+                }
+            }
+        }
+
+
+        //test at end to see if divided by 1 on the bottom.  if so, return nominal
+        return fraction;
+
+    }
+
+
+    public static int GCD(int a, int b) {//greatest common divisor
+        if (b==0) return a;
+        return GCD(b,a%b);
     }
 }

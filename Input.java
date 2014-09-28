@@ -13,26 +13,23 @@ public class Input {
             String input = new Scanner(System.in).nextLine();
             Date start = new Date();
             if (!isEquation(input)) {
-                System.out.println("\nBad Equation. Please Revise");
-                return;
+                System.out.println("\nBad Equation. Please Revise\n");
+                continue;
             }
 
             input = handSanitizer(input);
 
             EqualsOperator equalsOperator = new EqualsOperator();
             Parser parser = new Parser();
-            equalsOperator.addTerm(parser.ParseEquation(input.substring(0, input.indexOf("="))));//parse the equation into the Parser
-            equalsOperator.addTerm(parser.ParseEquation(input.substring(input.indexOf("=") + 1)));//parse the equation into the Parser
+            equalsOperator.addTerm(parser.ParseEquation(input.substring(0, input.indexOf("="))));//parse left side of the equation into the Parser
+            equalsOperator.addTerm(parser.ParseEquation(input.substring(input.indexOf("=") + 1)));//parse right side of the equation into the Parser
 
             System.out.println(equalsOperator.getList().toString());
-            System.out.println("It took " + (new Date().getTime() - start.getTime()) + " milliseconds");
+
+
+            System.out.println("It took " + (new Date().getTime() - start.getTime()) + " milliseconds");//print time
             System.out.println("");
         }
-
-
-
-
-
     }
 
     private static boolean isEquation(String equation) {
@@ -69,7 +66,7 @@ public class Input {
         Pattern p = Pattern.compile("[^(0-9,*,/,\\-,\\.,+,=,x,X,\\^)]");
         Matcher m = p.matcher(equation);
         if(m.find()){//detects illegal character
-            System.out.print("Illegal Character");
+            System.out.println("Illegal Character(s): "+m.group());
             return false;
         }
 
