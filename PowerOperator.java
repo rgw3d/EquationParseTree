@@ -71,36 +71,23 @@ public class PowerOperator extends Operator {
 
     public LinkedList<EquationNode> getList() throws CanNotEval{
         if(canEval()){
-            if(Terms.getFirst().getVar()==0){//meaning that there is no variable in the base
-                Nominal simplified = new Nominal(Math.pow(Terms.getFirst().getNum(),Terms.getLast().getNum()),0);
-                LinkedList<EquationNode> nominal = new LinkedList<EquationNode>();
-                nominal.add(simplified);
-                return nominal;
-            }
-            else{//with a variable in the base
-                Nominal simplified = new Nominal(Terms.getFirst().getNum(),Terms.getFirst().getVar()*Terms.getLast().getNum());
-                LinkedList<EquationNode> nominal = new LinkedList<EquationNode>();
-                nominal.add(simplified);
-                return nominal;
+            if(Terms.getFirst() instanceof Nominal) {//meaning that the first term is actually something else. like a multiplicaiton operator or something.
+                if (Terms.getFirst().getVar() == 0) {//meaning that there is no variable in the base
+                    Nominal simplified = new Nominal(Math.pow(Terms.getFirst().getNum(),
+                            ((NumberStructure)Terms.getLast().getList().getFirst()).getTop().getFirst().getNum()), 0);
+                    LinkedList<EquationNode> result = new LinkedList<EquationNode>();
+                    result.add(simplified);
+                    return result;
+                } else {//with a variable in the base
+                    Nominal simplified = new Nominal(Terms.getFirst().getNum(),
+                            Terms.getFirst().getVar() * ((NumberStructure)Terms.getLast().getList().getFirst()).getTop().getFirst().getNum());
+                    LinkedList<EquationNode> result = new LinkedList<EquationNode>();
+                    result.add(simplified);
+                    return result;
+                }
             }
         }
         throw new CanNotEval("Variable in the Power");
-
-
-        LinkedList<EquationNode> result = new LinkedList<EquationNode>();
-
-        LinkedList<EquationNode> nominals = new LinkedList<EquationNode>();
-        nominals.add(new Nominal(1,0));//set group to have a default value
-        LinkedList<LinkedList<EquationNode>> groups = new LinkedList<LinkedList<EquationNode>>();
-        groups.add(new Nominal(1,0).getList());//set groups to have a default value
-
-        for (EquationNode searchThrough : Terms) {//tests to see if instance of nominal
-            if (searchThrough instanceof Nominal)
-                nominals.add(searchThrough);
-            else
-                groups.add(searchThrough.getList());
-        }
-        return result;
 
     }
 

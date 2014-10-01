@@ -113,7 +113,7 @@ public class Input {
 
         fix=fix.replace("*+-","*-"); //common error that happens if multiplying by a negative
 
-        fix=fix.replace("=+-","=0+-"); //because
+        fix=fix.replace("(+-","(-"); //common error that happens if multiplying by a negative
 
         //this will be updated later as I fix all the syntax errors that come with exponents and parentheses
         System.out.println("\tReformatted Equation: "+ fix);
