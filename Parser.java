@@ -1,8 +1,3 @@
-import java.util.Scanner;
-import java.util.ListIterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Created by rgw3d on 8/12/2014.
  */
@@ -46,7 +41,6 @@ public class Parser
             //skip parenthesis
             //if anyting is found, foundOutParen is set to true.
 
-            boolean foundOutParen = false;
             boolean hasParen = false;
 
             for(int indx = input.length()-1; indx>0; indx--){
@@ -80,12 +74,11 @@ public class Parser
                     else if(op.equals("/")){
                         operator = new DivisionOperator();
                     }
-                    else {
-                        operator = new AdditionOperator();
+                    else {// if op.equals("^");
+                        operator = new PowerOperator();
                     }
 
-                    foundOutParen = true;
-
+                    //for the ^ operator, it should be the last thing picked off and should work
                     operator.addTerm(ParseEquation(input.substring(0,indx)));//left side
                     operator.addTerm(ParseEquation(input.substring(indx + 1)));//right side
                     return operator;
@@ -99,12 +92,12 @@ public class Parser
             then we must return the nominal that is left over
             */
             //for both these if s,  op.equals(^) because it has to be the last iteration of the top for loop
-            if(hasParen && !foundOutParen&& op.equals("^")){//loop inside the parenthesis because otherwise it would have returned an operator
+            if(hasParen && op.equals("^")){//loop inside the parenthesis because otherwise it would have returned an operator
                 //trim the parenthesis and call it again
                 return ParseEquation(input.substring(1,input.length()-1));
                 //should return the proper thing.  maybe
             }
-            else if(!hasParen && !foundOutParen && op.equals("^")){
+            else if(!hasParen && op.equals("^")){
                 ParseNominal parseNominal = new ParseNominal(input);
                 return new Nominal(parseNominal.constantCount,parseNominal.varExponent);//currently only parses numbers
             }

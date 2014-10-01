@@ -66,7 +66,11 @@ public class EqualsOperator extends Operator {
     public LinkedList<EquationNode> getList() throws CanNotEval{
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();
+        finalList.addAll(Terms.getFirst().getList());//add the left side of the expression
 
+
+
+        /*
         finalList.addAll(Terms.getFirst().getList());//get the left side of the equation and store it in the
 
         LinkedList<EquationNode> tmpRightSide = new LinkedList<EquationNode>();
@@ -74,12 +78,15 @@ public class EqualsOperator extends Operator {
             tmpRightSide.add(new Nominal(tmp.getNum() * -1, tmp.getVar()));  //multiplyControl num by -1
         }
 
+
         finalList.addAll(tmpRightSide);
+        */
+
 
         MathOperations.sortSimplifyNumberStructures(finalList);//now that everything is on one side, add them all together.
         MathOperations.simplifyFractionsFromList(finalList);
-
         MathOperations.removeZeros(finalList);
+
 
         //now we are going to run the whole thing through again to simplify more things.
 

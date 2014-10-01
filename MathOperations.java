@@ -507,7 +507,7 @@ public class MathOperations {
 
             bottomFractLoop:
             for (int x = botDiv.length-1; x >= 0; x--) {
-                for (int y = topDiv.length-1; x >= 0; y--) {
+                for (int y = topDiv.length-1; y >= 0; y--) {
                     if (topDiv[y] % botDiv[x] == 0) {//yaya it actually works. this means that the greatist divisor has been found.
                         LinkedList<EquationNode> tmpTop = new LinkedList<EquationNode>();
                         LinkedList<EquationNode> tmpBot = new LinkedList<EquationNode>();
@@ -533,8 +533,79 @@ public class MathOperations {
             }
         }
 
+        /*
+        above loops divided shit.  now its time to remove the variables.  yay dividing by variables.
+        how to do this.  we will just get a int that says the lowest var exponent that each have.
+        then compare the two and whicever is the smallest we will then just remove that many number of exponents from all of them
+        negative exponents do not count.
+        wait, we can just do Math.abs(and use those values.  maybe.  i will think about it.
+        nope. no negative exponents so far
+        */
 
-        //test at end to see if divided by 1 on the bottom.  if so, return nominal
+        boolean canReduceVars = true;
+        int topSmallestVar = -1;//non innitialized values
+        int botSmallestVar = -1;
+
+        for(EquationNode x: fraction.getTop()){
+            if(x instanceof Nominal){
+                if(topSmallestVar == -1) {
+                    topSmallestVar = (int) x.getVar();
+                }
+                else if(topSmallestVar>x.getVar() && x.getVar()>=0) {
+                    topSmallestVar = (int) x.getVar();
+                }
+            }
+            else{
+                canReduceVars = false;
+            }
+        }
+
+        for(EquationNode x: fraction.getBottom()){
+            if(x instanceof Nominal){
+                if(botSmallestVar == -1) {
+
+                    botSmallestVar = (int) x.getVar();
+                }
+                else if(botSmallestVar>x.getVar() && x.getVar()>=0) {
+                    botSmallestVar = (int) x.getVar();
+                }
+            }
+            else{
+                canReduceVars = false;
+            }
+        }
+
+        if(canReduceVars){
+            int reduceValue;
+            if(topSmallestVar>=botSmallestVar)
+                reduceValue = botSmallestVar;
+            else
+                reduceValue = topSmallestVar;
+
+            LinkedList<EquationNode> tmpTop = new LinkedList<EquationNode>();
+            LinkedList<EquationNode> tmpBot = new LinkedList<EquationNode>();
+
+            for (EquationNode node: fraction.getTop()){
+                tmpTop.add(new Nominal((node.getNum()),node.getVar()-reduceValue));
+            }
+            for (EquationNode node: fraction.getBottom()){
+                tmpBot.add(new Nominal((node.getNum()),node.getVar()-reduceValue));
+            }
+
+            fraction.getTop().clear();
+            fraction.getTop().addAll(tmpTop);
+
+            fraction.getBottom().clear();
+            fraction.getBottom().addAll(tmpBot);
+        }
+
+
+
+
+
+        /* test at end to see if divided by 1 on the bottom.  if so, return nominal
+        jk.  we will always return the fraction, even with the 1 denominator
+        */
         return fraction;
 
     }

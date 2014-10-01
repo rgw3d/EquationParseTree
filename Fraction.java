@@ -64,27 +64,43 @@ public class Fraction extends NumberStructure {
     }
 
     public String toString(){
-        String toReturn;
+        String toReturn ="";
+        String top = "";
+        String bot = "";
 
-        if(Bottom.size() ==1 && Bottom.getFirst().equals(Nominal.One)){//if denominator is 1
-            toReturn = "(";
+        if(Bottom.size() ==1 && Bottom.getFirst().equals(Nominal.One)) {//if denominator is 1
             for (EquationNode fract : Top) {
-                toReturn += " " + fract.toString();
+                if (top.equals("")) {
+                    top += fract.toString();
+                } else {
+                    top += "+" + fract.toString();
+                }
             }
-            toReturn +=")";
         }
         else {
-
-            toReturn = "((";
+            top = "((";
             for (EquationNode fract : Top) {
-                toReturn += " " + fract.toString();
+                if(top.equals("((")){
+                    top += fract.toString();
+                }
+                else{
+                   top+= "+"+fract.toString();
+                }
             }
-            toReturn += ")/(";
+            top+=")/(";
             for (EquationNode fract : Bottom) {
-                toReturn += fract.toString();
+                if(bot.equals("")){
+                    bot += fract.toString();
+                }
+                else{
+                    bot+= "+"+fract.toString();
+                }
             }
-            toReturn += "))";
+            bot += "))";
+
         }
+        toReturn+=bot;
+        toReturn+=top;
         return toReturn;
     }
 
