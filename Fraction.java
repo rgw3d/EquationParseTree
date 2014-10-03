@@ -99,8 +99,8 @@ public class Fraction extends NumberStructure {
             bot += "))";
 
         }
-        toReturn+=bot;
         toReturn+=top;
+        toReturn+=bot;
         return toReturn;
     }
 
