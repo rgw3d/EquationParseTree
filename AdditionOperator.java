@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.LinkedList;
 
 /**
  * Created by rgw3d on 8/11/2014.

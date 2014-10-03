@@ -1,21 +1,21 @@
 /**
  * Created by rgw3d on 8/12/2014.
  */
-public class Parser
-{
+public class Parser {
 
-    public Parser(){}
+    public Parser() {
+    }
 
     /**
      * Essentially this will be called recursivly, until the only thing left to parse are
      * Nominals/variables which will end parsing.
      * The rules for parsing:
-     *  Find + outside of Parenthesis
-     *  Find Mult or Div outside of Parenthesis
-     *  Find Exponents outsside of Parenthesis
-     *  Find Parenthesis
-     *  Find everything else that we just did but inside this new parenthesis
-     *
+     * Find + outside of Parenthesis
+     * Find Mult or Div outside of Parenthesis
+     * Find Exponents outsside of Parenthesis
+     * Find Parenthesis
+     * Find everything else that we just did but inside this new parenthesis
+     * <p/>
      * Essentially it is reverse Pemdas, as the things that are found last are
      * the statements that will be done first.  This parser will find the things that
      * are done last first.
@@ -34,52 +34,50 @@ public class Parser
 
         */
 
-        String[] operands = new String[] {"+","*","/","^"};
+        String[] operands = new String[]{"+", "*", "/", "^"};
 
-        for(String op: operands){//loop through each of the operands once
+        for (String op : operands) {//loop through each of the operands once
             //go backwards through the string to search for the operand
             //skip parenthesis
             //if anyting is found, foundOutParen is set to true.
 
             boolean hasParen = false;
 
-            for(int indx = input.length()-1; indx>0; indx--){
+            for (int indx = input.length() - 1; indx > 0; indx--) {
                 //loop through backwards
-                String eqtIndx = ""+input.charAt(indx);
+                String eqtIndx = "" + input.charAt(indx);
                 //first check to see if it is a closed paren.
-                if(eqtIndx.equals(")")){
+                if (eqtIndx.equals(")")) {
                     hasParen = true;
                     //skips paren and sets indx to its proper "skipped" value
-                    indx = skipParen(input,indx);
+                    indx = skipParen(input, indx);
                     continue;
                     //skip the rest of the statements so that indx can be again incremented
                     // this is to prevent indx from being equal to 0 and being decremented
                 }
-                if(eqtIndx.equals(op)){
+                if (eqtIndx.equals(op)) {
                     //yay we have a hit
                     //make sure that it is not a ^ next to a parenthesis
-                    if(op.equals("^") && (input.charAt(indx-1)+"").equals(")")){
+                    /*if (op.equals("^") && (input.charAt(indx - 1) + "").equals(")")) {
                         continue;
                         //not something that we deal with here. skip it
                     }
+                    */
 
                     Operator operator;
 
-                    if(op.equals("+")){
+                    if (op.equals("+")) {
                         operator = new AdditionOperator();
-                    }
-                    else if(op.equals("*")){
+                    } else if (op.equals("*")) {
                         operator = new MultiplicationOperator();
-                    }
-                    else if(op.equals("/")){
+                    } else if (op.equals("/")) {
                         operator = new DivisionOperator();
-                    }
-                    else {// if op.equals("^");
+                    } else {// if op.equals("^");
                         operator = new PowerOperator();
                     }
 
                     //for the ^ operator, it should be the last thing picked off and should work
-                    operator.addTerm(ParseEquation(input.substring(0,indx)));//left side
+                    operator.addTerm(ParseEquation(input.substring(0, indx)));//left side
                     operator.addTerm(ParseEquation(input.substring(indx + 1)));//right side
                     return operator;
                     //everything is added recursively
@@ -92,14 +90,13 @@ public class Parser
             then we must return the nominal that is left over
             */
             //for both these if s,  op.equals(^) because it has to be the last iteration of the top for loop
-            if(hasParen && op.equals("^")){//loop inside the parenthesis because otherwise it would have returned an operator
+            if (hasParen && op.equals("^")) {//loop inside the parenthesis because otherwise it would have returned an operator
                 //trim the parenthesis and call it again
-                return ParseEquation(input.substring(1,input.length()-1));
+                return ParseEquation(input.substring(1, input.length() - 1));
                 //should return the proper thing.  maybe
-            }
-            else if(!hasParen && op.equals("^")){
+            } else if (!hasParen && op.equals("^")) {
                 ParseNominal parseNominal = new ParseNominal(input);
-                return new Nominal(parseNominal.constantCount,parseNominal.varExponent);//currently only parses numbers
+                return new Nominal(parseNominal.constantCount, parseNominal.varExponent);//currently only parses numbers
             }
 
         }
@@ -107,51 +104,51 @@ public class Parser
 
     }
 
-    public class ParseNominal{
-        public ParseNominal(String input){
-            this.input=input;
-            parseInput();
-        }
-        public double constantCount = 0;
-        public double varExponent = 0;
-        private String input;
-
-        private void parseInput()
-        {
-            if(input.contains("x"))//if there is a x in it
-            {
-                varExponent=1;
-            }
-
-            if(input.equals("x")||input.equals("-x"))// if it just a "x"
-                input=input.replace("x","1x");
-            if(input.equals("-"))//another special case where it sends just a negative
-                input=input.replace("-","-1");
-            input=input.replace("x","");
-            constantCount=Double.parseDouble(input);
-
-        }
-    }
-
-    public int skipParen(String input,int indx){
+    public int skipParen(String input, int indx) {
         int openCount = 0;
         int closedCount = 1;
-        while(indx>0){
+        while (indx > 0) {
             indx--;
-            if((input.charAt(indx)+"").equals(")")){
+            if ((input.charAt(indx) + "").equals(")")) {
                 closedCount++;//increment closed count
             }
-            if((input.charAt(indx)+"").equals("(")){
+            if ((input.charAt(indx) + "").equals("(")) {
                 openCount++;//increment open count
             }
 
-            if(openCount == closedCount){
+            if (openCount == closedCount) {
                 return indx;
             }
         }
 
         //should throw error that parenthesis are not found
         return 0;
+    }
+
+    public class ParseNominal {
+        public double constantCount = 0;
+        public double varExponent = 0;
+        private String input;
+
+        public ParseNominal(String input) {
+            this.input = input;
+            parseInput();
+        }
+
+        private void parseInput() {
+            if (input.contains("x"))//if there is a x in it
+            {
+                varExponent = 1;
+            }
+
+            if (input.equals("x") || input.equals("-x"))// if it just a "x"
+                input = input.replace("x", "1x");
+            if (input.equals("-"))//another special case where it sends just a negative
+                input = input.replace("-", "-1");
+            input = input.replace("x", "");
+            constantCount = Double.parseDouble(input);
+
+        }
     }
 
 

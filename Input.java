@@ -1,14 +1,14 @@
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Input {
 
     public static void main(String[] args) throws UnparsedString, CanNotEval {
 
-        while(true) {
+        while (true) {
             System.out.println("Enter an expression to see it parsed");
 
             String input = new Scanner(System.in).nextLine();
@@ -37,8 +37,8 @@ public class Input {
 
     private static void printSimplifiedResult(LinkedList<EquationNode> list) {
         String toPrint = "";
-        for(EquationNode x: list){
-            toPrint+="+"+x.toString();
+        for (EquationNode x : list) {
+            toPrint += "+" + x.toString();
         }
         toPrint = toPrint.substring(1);//remove the first + sign
         System.out.println(toPrint);
@@ -71,7 +71,7 @@ public class Input {
             return false;
         }
 
-        String beginOfEq = ""+equation.charAt(0); //starts bad
+        String beginOfEq = "" + equation.charAt(0); //starts bad
         if (beginOfEq.equals("+") || beginOfEq.equals("-") || beginOfEq.equals("*") || beginOfEq.equals("/")) {
             System.out.print("Starts with a +, -, * or /");
             return false;
@@ -79,8 +79,8 @@ public class Input {
 
         Pattern p = Pattern.compile("[^(0-9,*,/,\\-,\\.,+,x,X,\\^,\\s)]");
         Matcher m = p.matcher(equation);
-        if(m.find()){//detects illegal character
-            System.out.println("Illegal Character(s): "+m.group());
+        if (m.find()) {//detects illegal character
+            System.out.println("Illegal Character(s): " + m.group());
             return false;
         }
 
@@ -98,25 +98,24 @@ public class Input {
         }
     }
 
-    private static String handSanitizer(String fix)
-    {
-        System.out.print("\n\tInput Equation: "+fix);
-        fix=fix.replace(" ","");//Geting rid of spaces
+    private static String handSanitizer(String fix) {
+        System.out.print("\n\tInput Equation: " + fix);
+        fix = fix.replace(" ", "");//Geting rid of spaces
 
-        fix=fix.replace("--","+"); //minus a minus is addition.  make it simple
+        fix = fix.replace("--", "+"); //minus a minus is addition.  make it simple
 
-        fix=fix.replace("-","+-");  //replace a negative with just plus a minus.
+        fix = fix.replace("-", "+-");  //replace a negative with just plus a minus.
 
-        fix=fix.replace("X","x");//just cuz
+        fix = fix.replace("X", "x");//just cuz
 
-        fix=fix.replace("^+-","^-"); //common error that happens after one of the above methods run. negative exponents
+        fix = fix.replace("^+-", "^-"); //common error that happens after one of the above methods run. negative exponents
 
-        fix=fix.replace("*+-","*-"); //common error that happens if multiplying by a negative
+        fix = fix.replace("*+-", "*-"); //common error that happens if multiplying by a negative
 
-        fix=fix.replace("(+-","(-"); //common error that happens if multiplying by a negative
+        fix = fix.replace("(+-", "(-"); //common error that happens if multiplying by a negative
 
         //this will be updated later as I fix all the syntax errors that come with exponents and parentheses
-        System.out.println("\tReformatted Equation: "+ fix);
+        System.out.println("\tReformatted Equation: " + fix);
         return fix;
     }
 
