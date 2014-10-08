@@ -51,10 +51,6 @@ public class Fraction extends NumberStructure {
         return -1;
     }
 
-    public Nominal getNominal() throws CanNotEval {
-        return null;
-    }
-
     public boolean canEval() throws CanNotEval {
         return false;
     }

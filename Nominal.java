@@ -18,7 +18,7 @@ public class Nominal extends NumberStructure{
     @Override
     public LinkedList<EquationNode> getTop() {
         LinkedList<EquationNode> toReturn = new LinkedList<EquationNode>();
-        toReturn.add(getNominal());
+        toReturn.add(this);
         return toReturn;
     }
     //does not override getBottom();
@@ -37,8 +37,6 @@ public class Nominal extends NumberStructure{
     }
 
     public boolean canEval(){ return true; }
-
-    public Nominal getNominal() { return this; }
 
     public LinkedList<EquationNode> getList()
     {

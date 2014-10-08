@@ -1,6 +1,7 @@
 import java.util.LinkedList;
 
 /**
+ * Parent to Fraction and Nominal
  * Created by rgw3d on 8/16/2014.
  */
 public abstract class NumberStructure implements EquationNode {
@@ -15,5 +16,5 @@ public abstract class NumberStructure implements EquationNode {
         LinkedList<EquationNode> toReturn = new LinkedList<EquationNode>();
         toReturn.add(Nominal.One);
         return toReturn;
-    };
+    }
 }

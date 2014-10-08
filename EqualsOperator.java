@@ -16,29 +16,6 @@ public class EqualsOperator extends Operator {
         this.Terms = Terms;
     }
 
-    public double getNum() {
-            double Value = Terms.getFirst().getNum();//subtracts rightside from left side
-            Value -= Terms.getLast().getNum();
-            return Value;
-
-    }
-
-    public double getVar() {
-            double Value = Terms.getFirst().getVar();//subtracts rightside from left side
-            Value -= Terms.getLast().getVar();
-            return Value;
-
-    }
-
-    public Nominal getNominal() {
-            return new Nominal(getNum(), getVar());
-
-    }
-
-    public boolean canEval() throws CanNotEval {
-        return evaluate(Terms);
-    }
-
     private boolean evaluate(LinkedList<EquationNode> Parts) throws CanNotEval {
         boolean allNominals = true;
         boolean allCompatable = true;
@@ -56,13 +33,11 @@ public class EqualsOperator extends Operator {
         return false;
     }
 
-    /*
-
-    Will return a list of objects that can be solved in some other formula.
-    these objects will all be on one side of the equation
-
-    */
-
+    /**
+     * This is the method that starts everything and starts the true computation of the program.
+     * @return a LinkedList of all the simplified terms. No Operators are returned. List of Nominals or Fractions
+     * @throws CanNotEval
+     */
     public LinkedList<EquationNode> getList() throws CanNotEval{
 
         LinkedList<EquationNode> finalList = new LinkedList<EquationNode>();

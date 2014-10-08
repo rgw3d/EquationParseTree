@@ -1,3 +1,5 @@
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -8,8 +10,8 @@ public class Input {
 
     public static void main(String[] args) throws UnparsedString, CanNotEval {
 
-        while (true) {
-            System.out.println("Enter an expression to see it parsed");
+        while(true){
+            System.out.println("Enter an expression to see it simplified");
 
             String input = new Scanner(System.in).nextLine();
             Date start = new Date();
@@ -23,18 +25,22 @@ public class Input {
             EqualsOperator equalsOperator = new EqualsOperator();
             Parser parser = new Parser();
             equalsOperator.addTerm(parser.ParseEquation(input));//parse the expression
-            //now just dealing with expression
+            //now just dealing with expression, so we no longer need the equals operators
             //equalsOperator.addTerm(parser.ParseEquation(input.substring(0, input.indexOf("="))));//parse left side of the equation into the Parser
             //equalsOperator.addTerm(parser.ParseEquation(input.substring(input.indexOf("=") + 1)));//parse right side of the equation into the Parser
 
             printSimplifiedResult(equalsOperator.getList());//get the result here
-
-
             System.out.println("It took " + (new Date().getTime() - start.getTime()) + " milliseconds");//print time
             System.out.println("");
         }
     }
 
+    /**
+     * This is used to print the output after recieving the list of results.
+     * uses addition between every term
+     * does not return anything, as it simply prints out something.
+     * @param list must send a linkedList<EquationNode>
+     */
     private static void printSimplifiedResult(LinkedList<EquationNode> list) {
         String toPrint = "";
         for (EquationNode x : list) {
@@ -44,21 +50,12 @@ public class Input {
         System.out.println(toPrint);
     }
 
+    /**
+     *
+     * @param equation the string to be tested
+     * @return boolean if the expression qualifies as an acceptable expression
+     */
     private static boolean isEquation(String equation) {
-        /*if(!(equation.contains("=")))//Not enough = signs!
-        {
-            System.out.print("No Equals Sign");
-            return false;
-        }
-
-
-        if(equation.indexOf('=')!= equation.lastIndexOf('='))//Too many = signs!
-        {
-            System.out.print("Too many Equals Signs");
-            return false;
-        }
-        */
-
         if (!(equation.length() >= 3)) //to short
         {
             System.out.print("Too Short to be considered an expression");
@@ -96,8 +93,26 @@ public class Input {
             System.out.print("Syntax Passed");
             return true;
         }
+        /*if(!(equation.contains("=")))//Not enough = signs!
+        {
+            System.out.print("No Equals Sign");
+            return false;
+        }
+
+
+        if(equation.indexOf('=')!= equation.lastIndexOf('='))//Too many = signs!
+        {
+            System.out.print("Too many Equals Signs");
+            return false;
+        }
+        */
     }
 
+    /**
+     *
+     * @param fix the string to reformat so that the parser can parse it
+     * @return returns the "fixed"  string
+     */
     private static String handSanitizer(String fix) {
         System.out.print("\n\tInput Equation: " + fix);
         fix = fix.replace(" ", "");//Geting rid of spaces
@@ -113,6 +128,8 @@ public class Input {
         fix = fix.replace("*+-", "*-"); //common error that happens if multiplying by a negative
 
         fix = fix.replace("(+-", "(-"); //common error that happens if multiplying by a negative
+
+        fix = fix.replace(")(",")*(");//multiply by parenthesis
 
         //this will be updated later as I fix all the syntax errors that come with exponents and parentheses
         System.out.println("\tReformatted Equation: " + fix);

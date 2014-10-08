@@ -37,13 +37,6 @@ public class PowerOperator extends Operator {
             return Terms.getFirst().getVar();
     }
 
-    public Nominal getNominal() throws CanNotEval {
-        if (canEval()) {
-            return new Nominal(getNum(), getVar());
-        } else
-            throw new CanNotEval("Can Not Evaluate Expression");
-    }
-
     public boolean canEval() throws CanNotEval {
         //justs tests to see if the power has a variable or not.  hopefully not
         //okay so the rules are that the exponent must be a nominal without any variables.  must jsut be a number
@@ -53,6 +46,7 @@ public class PowerOperator extends Operator {
         if (Terms.getLast() instanceof Nominal && Terms.getLast().getVar() == 0) {
             return true;
         } else {
+
             LinkedList<EquationNode> list = Terms.getLast().getList();//get the list for the exponent
             if (list.size() == 1 && list.getFirst() instanceof Nominal && list.getFirst().getVar() == 0) {
                 return true;//if it simplifies to a nominal without a variable

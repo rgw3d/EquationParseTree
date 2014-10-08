@@ -28,13 +28,6 @@ public class DivisionOperator extends Operator{
         return value;
     }
 
-    public Nominal getNominal() throws CanNotEval {
-        if(canEval())
-            return new Nominal(getNum(), getVar());
-        else
-            throw new CanNotEval("Can Not Evaluate Expression");
-    }
-
     public double getVar() {
         double value=  0;
         for(EquationNode tmp: Terms){

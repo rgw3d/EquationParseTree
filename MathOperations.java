@@ -139,7 +139,10 @@ public class MathOperations {
             if (searchThrough instanceof Nominal)
                 nominals.add(searchThrough);//puts it with all the other nominals
             else
-                groups.add(searchThrough.getList());//puts all the lists asside
+                groups.add(searchThrough.getList());//adds the returned list from the Operator
+                //if searchThrough was a somethingOperator, it gets its list.
+                //so ifi searchThrough was an additionOperator, it essentially runs the same methods.
+                //this is the really important part that calls down the chain
         }
 
         if (canAddEasy(nominals)) {//if they are all the same nominal type.  its faster
@@ -158,7 +161,7 @@ public class MathOperations {
     public static NumberStructure combineAll(LinkedList<EquationNode> toCombine) throws CanNotEval {
 
         if(toCombine.getFirst() instanceof Nominal) {
-            NumberStructure result = new Nominal(0, 0);
+            NumberStructure result = new Nominal(0,0);
 
             for (EquationNode x : toCombine) {//add everything together
                 result = new Nominal(x.getNum() + result.getNum(), x.getVar());
@@ -248,8 +251,10 @@ public class MathOperations {
 
         LinkedList<EquationNode> finalNomials = new LinkedList<EquationNode>();
         for (LinkedList<EquationNode> x : varsAdded) {
-            NumberStructure simplifed = combineAll(SortedNominals.get(x));
-            finalNomials.add(simplifed);
+            NumberStructure simplifed = combineAll(SortedNominals.get(x));//add everything together that has the same variable exponent
+            if(!(simplifed.getTop().getFirst().getNum() ==0)) {//if the number does not equal zero
+                finalNomials.add(simplifed);
+            }//the if is necessary because sometimes there can be this number--> 0.0x^2.0.  screws up later.  so just dont add it.
         }
 
 
@@ -262,9 +267,9 @@ public class MathOperations {
         ArrayList<Double> varsAdded = new ArrayList<Double>();
 
         for (EquationNode nom : nominalsOnly) {//add everyone to their respectieve gropus
-            Double nomBottom = nom.getVar();
+            Double nomBottom = nom.getVar();//the variable value of the nominal
             try {
-                SortedNominals.get(nomBottom).add(nom);
+                SortedNominals.get(nomBottom).add(nom);//use the key to get the LinkedList<EquationNode> and then add the nominal
             } catch (NullPointerException E) {//key was not mapped to a value
                 LinkedList<EquationNode> tmp = new LinkedList<EquationNode>();
                 tmp.add(nom);
@@ -276,7 +281,8 @@ public class MathOperations {
         LinkedList<EquationNode> finalNomials = new LinkedList<EquationNode>();
         for (Double x : varsAdded) {
             NumberStructure simplifed = combineAll(SortedNominals.get(x));
-            finalNomials.add(simplifed);
+            if(simplifed.getTop().getFirst().getNum()!=0)//num doesnt equal zero.  stops this situation--> 0.0x^2.0 from happening and screwing things up
+                finalNomials.add(simplifed);
         }
         result.addAll(finalNomials);
     }
@@ -290,7 +296,7 @@ public class MathOperations {
         if (allNominals) {
             double firstVarValue = Parts.getFirst().getVar();
             for (EquationNode searchThrough : Parts) {//tests to see if instance of nominal
-                allCompatable &= searchThrough.getVar() == firstVarValue;//
+                allCompatable &= searchThrough.getVar() == firstVarValue;
             }
             //combining all is possible so it returns true. all other paths lead to false;
             if (allCompatable) return true;
