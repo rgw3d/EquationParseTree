@@ -7,26 +7,19 @@ public class AdditionOperator extends Operator {
 
     public AdditionOperator() {
         super();
-        Terms = new LinkedList<EquationNode>();
+        //Terms = new LinkedList<EquationNode>();
     }
 
     public AdditionOperator(LinkedList<EquationNode> Terms) {
         super(Terms);
-        this.Terms = Terms;
+        //this.Terms = Terms;
     }
 
-    public AdditionOperator(String left, String right){
-        Terms.add(new Nominal(Double.parseDouble(left),0));
-        Terms.add(new Nominal(Double.parseDouble(right),0));
-    }
-
+    /**
+     * "first term" + "second term"
+     * @return String value of operator
+     */
     public String toString() {
-        try {
-            if(canEval())
-                return (" " + getNum() + " " + getVar() + " " + new Nominal(getNum(), getVar()).toString());//this is why there are excepitons here
-        } catch (CanNotEval canNotEval) {
-            canNotEval.printStackTrace();
-        }
         return Terms.getFirst().toString()+"+"+Terms.getLast().toString();
     }
 

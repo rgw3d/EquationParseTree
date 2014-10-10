@@ -401,7 +401,7 @@ public class MathOperations {
         }
         for(EquationNode bot: fraction.getBottom()){//simplify underlying fractions
             if(bot instanceof Fraction){//could be a fraction in a fraction
-                int tmpIndx = fraction.getTop().indexOf(bot);//get indx of fraction
+                int tmpIndx = fraction.getBottom().indexOf(bot);//get indx of fraction
                 fraction.getBottom().remove(bot);//remove the object from the list
                 fraction.getBottom().add(tmpIndx,simplifyFractions((Fraction)bot));//add the "simplifed" object back in
             }

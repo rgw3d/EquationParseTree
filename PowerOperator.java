@@ -5,44 +5,21 @@ import java.util.LinkedList;
  */
 public class PowerOperator extends Operator {
 
-    private boolean RaiseVar = false;
-
+    /**
+     * Default Constructor
+     */
     public PowerOperator() {
         super();
         Terms = new LinkedList<EquationNode>();
     }
 
-    public PowerOperator(LinkedList<EquationNode> Terms) {
-        super(Terms);
-        this.Terms = Terms;
-    }
-
-    public PowerOperator(LinkedList<EquationNode> Terms, boolean raiseVar) {
-        super(Terms);
-        this.Terms = Terms;
-        RaiseVar = raiseVar;
-    }
-
-    public double getNum() {
-        if (!RaiseVar)
-            return Math.pow(Terms.getFirst().getNum(), Terms.getLast().getNum());
-        else
-            return Terms.getFirst().getNum();
-    }
-
-    public double getVar() {
-        if (RaiseVar)
-            return Terms.getFirst().getVar() * Terms.getLast().getVar();
-        else
-            return Terms.getFirst().getVar();
-    }
-
+    /**
+     * This canEval() method is actually important.  determins if there is a variable in the exponent
+     * @return boolean
+     * @throws CanNotEval
+     */
+    @Override
     public boolean canEval() throws CanNotEval {
-        //justs tests to see if the power has a variable or not.  hopefully not
-        //okay so the rules are that the exponent must be a nominal without any variables.  must jsut be a number
-        //or the exponent must just simplify into a number.  ahhh.
-        //this will only test the exponent.
-
         if (Terms.getLast() instanceof Nominal && Terms.getLast().getVar() == 0) {
             return true;
         } else {
@@ -61,6 +38,11 @@ public class PowerOperator extends Operator {
 
     }
 
+    /**
+     * exponent must be an int.
+     * @return LinkedList of EquationNode type.
+     * @throws CanNotEval  If there is a variable in the exponent, throws and error.  if canEval() is false throws this
+     */
     public LinkedList<EquationNode> getList() throws CanNotEval {
         if (canEval()) {
             if (Terms.getFirst() instanceof Nominal) {//meaning that the first term is actually something else. like a multiplicaiton operator or something.
@@ -80,15 +62,40 @@ public class PowerOperator extends Operator {
             } else {//this means that the first bit equals something else.
                 //determine if it needs to be flipped (negative exponent)
                 //determine how many times it is multiplied against itself.
-                LinkedList<EquationNode> orig = Terms.getFirst().getList();
                 int expnt = (int)((NumberStructure) Terms.getLast().getList().getFirst()).getTop().getFirst().getNum();
-                //get exponent
+                //get exponent.  will be cast to an int.
                 if(expnt ==0) {
                     LinkedList<EquationNode> toReturn = new LinkedList<EquationNode>();
                     toReturn.add(Nominal.One);
                     return toReturn;
                 }
                 else if(expnt <0){//negative exponent
+                    Fraction flipped = new Fraction(Nominal.One,Terms.getFirst().getList());
+                    expnt = Math.abs(expnt);
+
+                    if(expnt-1==0){//not multiplied
+                        LinkedList<EquationNode> toReturn = new LinkedList<EquationNode>();
+                        toReturn.add(flipped);
+                        return toReturn;
+                    }
+
+                    MultiplicationOperator[] raisedPowers = new MultiplicationOperator[expnt-1];
+                    for(int i = raisedPowers.length-1; i>=0; i--)
+                    {
+                        if(i == raisedPowers.length-1){
+                            raisedPowers[i] = new MultiplicationOperator();
+                            raisedPowers[i].addTerm(flipped);
+                            raisedPowers[i].addTerm(flipped);
+                        }
+                        else{
+                            raisedPowers[i] = new MultiplicationOperator();
+                            raisedPowers[i].addTerm(raisedPowers[i+1]);
+                            raisedPowers[i].addTerm(flipped);
+                        }
+                    }
+
+                    LinkedList<EquationNode> allRaised = raisedPowers[0].getList();
+                    return allRaised;
 
                 }
                 else
@@ -115,8 +122,6 @@ public class PowerOperator extends Operator {
                     LinkedList<EquationNode> allRaised = raisedPowers[0].getList();
                     return allRaised;
                 }
-
-
             }
         }
         throw new CanNotEval("Variable in the Power");
